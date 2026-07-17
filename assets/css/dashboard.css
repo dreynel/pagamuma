@@ -1,0 +1,129 @@
+/* Sidebar Styles for PAG-AMUMA Dashboard */
+#wrapper {
+    overflow-x: hidden;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: var(--white);
+    border-right: 1px solid #e0e0e0;
+    height: 100vh;
+    transition: margin 0.25s ease-out;
+    position: fixed;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+}
+
+/* Custom Webkit scrollbar for sidebar */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+
+.logo-circle-small {
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-img {
+    width: 70px;
+    height: 70px;
+}
+
+.sidebar .list-group-item {
+    border: none;
+    padding: 10px 15px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    margin: 2px 0;
+    transition: all 0.2s;
+}
+
+.sidebar .list-group-item:hover {
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+    transform: translateX(3px);
+}
+
+.sidebar .list-group-item.active {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(229, 115, 115, 0.3);
+}
+
+.sidebar .list-group-item.active:hover {
+    color: var(--white);
+    transform: none;
+}
+
+.sidebar .list-group-item.text-danger:hover {
+    background-color: #fcedec;
+    color: #d32f2f !important;
+}
+
+.sidebar .list-group-item i {
+    width: 25px;
+    text-align: center;
+}
+
+.bg-primary-light {
+    background-color: var(--primary-light) !important;
+}
+
+.bg-primary-light:hover {
+    background-color: #ffb4be !important;
+}
+
+#page-content-wrapper {
+    width: 100%;
+    margin-left: 260px;
+    transition: margin 0.25s ease-out;
+}
+
+/* Toggled State */
+#wrapper.toggled .sidebar {
+    margin-left: -260px;
+}
+#wrapper.toggled #page-content-wrapper {
+    margin-left: 0;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    #page-content-wrapper {
+        margin-left: 0;
+    }
+    .sidebar {
+        margin-left: -260px;
+    }
+    #wrapper.toggled .sidebar {
+        margin-left: 0;
+    }
+    #wrapper.toggled .sidebar-backdrop {
+        display: block;
+    }
+}
