@@ -10,17 +10,6 @@ USE `pagamuma_db`;
 -- Note: oauth_provider and oauth_id columns are prepared for 
 -- future Google/Facebook login integration as requested.
 -- --------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `system_reviews` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `rating` tinyint(4) NOT NULL,
-  `comment` text NOT NULL,
-  `status` enum('pending','approved') DEFAULT 'pending',
-  `created_at` timestamp DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `first_name` VARCHAR(100) NOT NULL,
@@ -36,6 +25,17 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS `system_reviews` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `rating` tinyint(4) NOT NULL,
+  `comment` text NOT NULL,
+  `status` enum('pending','approved') DEFAULT 'pending',
+  `created_at` timestamp DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 -- Table Structure for `pregnancy_profiles`

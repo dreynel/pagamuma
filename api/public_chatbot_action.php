@@ -3,6 +3,13 @@
 // PAG-AMUMA Public Chatbot API - No login required (guest mode)
 
 // --- Config ---
+require_once '../config/keys.php';
+
+if (!defined('GEMINI_API_KEY') || empty(GEMINI_API_KEY)) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Gemini API key is not configured. Please set GEMINI_API_KEY in config/keys.php.']);
+    exit;
+}
 
 define('GEMINI_API_URL', 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . GEMINI_API_KEY);
 

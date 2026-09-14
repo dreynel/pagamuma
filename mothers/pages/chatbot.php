@@ -192,9 +192,9 @@
         <div class="mb-3">
             <h4 class="fw-bold text-dark mb-1">
                 <i class="fa-solid fa-robot me-2 text-purple" style="color:#7c3aed;"></i>
-                PAG-AMUMA Chatbot
+                <span data-i18n="menu_chatbot">PAG-AMUMA Chatbot</span>
             </h4>
-            <p class="text-muted small mb-0">AI-powered pregnancy support — ask in English, Tagalog, or Hiligaynon.</p>
+            <p class="text-muted small mb-0" data-i18n="chatbot_subtitle">AI-powered pregnancy support — ask in English, Tagalog, or Hiligaynon.</p>
         </div>
 
         <!-- Chat Card -->
@@ -251,6 +251,7 @@
                         id="chatInput"
                         rows="1"
                         placeholder="Ask your pregnancy question here…"
+                        data-i18n-placeholder="chat_input_placeholder"
                         maxlength="1000"
                     ></textarea>
                     <button id="sendBtn" title="Send message">

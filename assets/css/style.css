@@ -7,17 +7,50 @@
     --primary-color: #e57373; /* Soft warm red/pink */
     --primary-hover: #ef5350;
     --primary-light: #ffcdd2;
+    --primary-soft: #fff5f5;
     --secondary-color: #ffb74d; /* Soft warm orange/yellow */
-    --text-dark: #2c3e50;
-    --text-muted: #7f8c8d;
-    --bg-light: #f8f9fa;
+    --accent-purple: #7c3aed;
+    --accent-teal: #0d9488;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --bg-light: #f8fafc;
     --white: #ffffff;
+    --border-subtle: rgba(0, 0, 0, 0.06);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-md: 0 8px 24px -4px rgba(0,0,0,0.06);
+    --shadow-lg: 0 16px 36px -6px rgba(229, 115, 115, 0.18), 0 6px 16px -2px rgba(0,0,0,0.04);
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
     font-family: 'Outfit', sans-serif;
     background-color: var(--bg-light);
     color: var(--text-dark);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .display-3, .display-4, .display-5, .display-6 {
+    text-wrap: balance;
+    letter-spacing: -0.015em;
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
 
 /* Hero Section (Left Side) */
@@ -149,3 +182,63 @@ a.text-primary:hover {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
 }
+
+/* Card Hover & Micro-interactions */
+.card-hover {
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.28s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 36px -6px rgba(229, 115, 115, 0.16), 0 6px 16px -2px rgba(0, 0, 0, 0.03) !important;
+    border-color: rgba(229, 115, 115, 0.2) !important;
+}
+
+/* Soft Badges */
+.badge-soft-primary {
+    background-color: rgba(229, 115, 115, 0.12);
+    color: #e57373;
+    border: 1px solid rgba(229, 115, 115, 0.22);
+}
+
+.badge-soft-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.badge-soft-success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-soft-purple {
+    background-color: rgba(124, 58, 237, 0.1);
+    color: #7c3aed;
+    border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+.badge-soft-amber {
+    background-color: rgba(245, 158, 11, 0.12);
+    color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* Glassmorphism Panel */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Interactive Links */
+.hover-arrow {
+    transition: transform 0.2s ease;
+}
+.hover-arrow:hover i {
+    transform: translateX(4px);
+}
+

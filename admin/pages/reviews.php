@@ -23,7 +23,7 @@ function renderStars($rating) {
 
 <div class="row w-100">
     <div class="col-12">
-        <h4 class="fw-bold mb-4">Manage System Reviews</h4>
+        <h4 class="fw-bold mb-4" data-i18n="menu_manage_reviews">Manage System Reviews</h4>
 
         <div class="card border-0 shadow-sm rounded-4">
             <div class="card-body p-0">
@@ -31,12 +31,12 @@ function renderStars($rating) {
                     <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="ps-4">Mother</th>
-                                <th>Rating</th>
-                                <th style="width: 40%">Comment</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th class="text-end pe-4">Actions</th>
+                                <th class="ps-4" data-i18n="th_mother">Mother</th>
+                                <th data-i18n="th_rating">Rating</th>
+                                <th style="width: 40%" data-i18n="th_comment">Comment</th>
+                                <th data-i18n="th_date">Date</th>
+                                <th data-i18n="th_status">Status</th>
+                                <th class="text-end pe-4" data-i18n="th_action">Actions</th>
                             </tr>
                         </thead>
                         <tbody>

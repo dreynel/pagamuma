@@ -12,33 +12,33 @@ $logs = $stmt->fetchAll();
 <div class="row mb-4">
     <div class="col-12">
         <h2 class="fw-bold text-dark mb-1" data-i18n="menu_tracking">Health Tracking</h2>
-        <p class="text-muted">Keep a daily or weekly record of your pregnancy journey.</p>
+        <p class="text-muted" data-i18n="tracking_subtitle">Keep a daily or weekly record of your pregnancy journey.</p>
     </div>
 </div>
 
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm rounded-4 p-4">
-            <h5 class="fw-bold text-dark mb-4">Log New Vitals</h5>
+            <h5 class="fw-bold text-dark mb-4" data-i18n="log_vitals_title">Log New Vitals</h5>
             <form id="healthLogForm">
                 <div class="mb-3">
-                    <label class="form-label text-muted small fw-medium">Date</label>
+                    <label class="form-label text-muted small fw-medium" data-i18n="label_date">Date</label>
                     <input type="date" name="log_date" class="form-control bg-light border-0" value="<?= date('Y-m-d') ?>" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label text-muted small fw-medium">Weight (kg)</label>
-                    <input type="number" step="0.1" name="weight_kg" class="form-control bg-light border-0" placeholder="e.g. 65.5">
+                    <label class="form-label text-muted small fw-medium" data-i18n="label_weight_kg">Weight (kg)</label>
+                    <input type="number" step="0.1" name="weight_kg" class="form-control bg-light border-0" placeholder="e.g. 65.5" data-i18n-placeholder="placeholder_weight">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label text-muted small fw-medium">Blood Pressure</label>
-                    <input type="text" name="blood_pressure" class="form-control bg-light border-0" placeholder="e.g. 120/80">
+                    <label class="form-label text-muted small fw-medium" data-i18n="label_bp">Blood Pressure</label>
+                    <input type="text" name="blood_pressure" class="form-control bg-light border-0" placeholder="e.g. 120/80" data-i18n-placeholder="placeholder_bp">
                 </div>
                 <div class="mb-4">
-                    <label class="form-label text-muted small fw-medium">Symptoms / Notes</label>
-                    <textarea name="symptoms" class="form-control bg-light border-0" rows="3" placeholder="How are you feeling today?"></textarea>
+                    <label class="form-label text-muted small fw-medium" data-i18n="label_symptoms">Symptoms / Notes</label>
+                    <textarea name="symptoms" class="form-control bg-light border-0" rows="3" placeholder="How are you feeling today?" data-i18n-placeholder="symptoms_placeholder"></textarea>
                 </div>
                 <div id="logAlert" class="alert d-none" role="alert"></div>
-                <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-medium">Save Log</button>
+                <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-medium" data-i18n="save_log_btn">Save Log</button>
             </form>
         </div>
     </div>
@@ -46,26 +46,26 @@ $logs = $stmt->fetchAll();
     <div class="col-lg-8">
         <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold text-dark mb-0">Recent History</h5>
-                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="window.print()"><i class="fa-solid fa-download me-2"></i> Export</button>
+                <h5 class="fw-bold text-dark mb-0" data-i18n="recent_history_title">Recent History</h5>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="window.print()"><i class="fa-solid fa-download me-2"></i> <span data-i18n="btn_export">Export</span></button>
             </div>
             
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th class="text-muted small fw-medium">Date</th>
-                            <th class="text-muted small fw-medium">Weight</th>
-                            <th class="text-muted small fw-medium">BP</th>
-                            <th class="text-muted small fw-medium">Symptoms/Notes</th>
-                            <th class="text-muted small fw-medium">Prescription</th>
-                            <th class="text-muted small fw-medium text-end">Action</th>
+                            <th class="text-muted small fw-medium" data-i18n="th_date">Date</th>
+                            <th class="text-muted small fw-medium" data-i18n="th_weight">Weight</th>
+                            <th class="text-muted small fw-medium" data-i18n="th_bp_short">BP</th>
+                            <th class="text-muted small fw-medium" data-i18n="th_symptoms">Symptoms/Notes</th>
+                            <th class="text-muted small fw-medium" data-i18n="th_prescription">Prescription</th>
+                            <th class="text-muted small fw-medium text-end" data-i18n="th_action">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if(empty($logs)): ?>
                             <tr>
-                                <td colspan="5" class="text-center py-4 text-muted">No vitals logged yet. Start logging on the left!</td>
+                                <td colspan="6" class="text-center py-4 text-muted" data-i18n="no_vitals_logged">No vitals logged yet. Start logging on the left!</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach($logs as $log): ?>
@@ -93,11 +93,11 @@ $logs = $stmt->fetchAll();
                                                 <?= nl2br(htmlspecialchars($log['prescription'])) ?>
                                             </div>
                                         <?php else: ?>
-                                            <span class="text-secondary fst-italic">Pending...</span>
+                                            <span class="text-secondary fst-italic" data-i18n="status_pending">Pending...</span>
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-end">
-                                        <button class="btn btn-sm btn-outline-danger btn-delete-log rounded-circle shadow-sm" data-log-id="<?= $log['id'] ?>" title="Delete Log">
+                                        <button class="btn btn-sm btn-outline-danger btn-delete-log rounded-circle shadow-sm" data-log-id="<?= $log['id'] ?>" title="Delete Log" data-i18n-title="delete_log_title">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </td>

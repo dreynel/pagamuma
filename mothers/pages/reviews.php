@@ -17,8 +17,8 @@ $status = $has_review ? $review['status'] : '';
 <div class="row w-100">
     <div class="col-lg-8 mx-auto">
         <div class="text-center mb-4">
-            <h2 class="fw-bold text-dark mb-2">Platform Feedback</h2>
-            <p class="text-muted">Help us improve PAG-AMUMA by sharing your experience.</p>
+            <h2 class="fw-bold text-dark mb-2" data-i18n="menu_reviews">Platform Feedback</h2>
+            <p class="text-muted" data-i18n="reviews_subtitle">Help us improve PAG-AMUMA by sharing your experience.</p>
         </div>
 
         <?php if ($has_review): ?>
@@ -39,7 +39,7 @@ $status = $has_review ? $review['status'] : '';
             <div class="card-body p-4 p-md-5">
                 <form id="reviewForm">
                     <div class="mb-4 text-center">
-                        <label class="form-label fw-bold d-block mb-3">Overall Rating</label>
+                        <label class="form-label fw-bold d-block mb-3" data-i18n="overall_rating">Overall Rating</label>
                         <div class="star-rating fs-2" style="color: #ddd;">
                             <!-- Data attribute to hold current rating -->
                             <input type="hidden" name="rating" id="ratingValue" value="<?= htmlspecialchars($rating) ?>">
@@ -52,12 +52,12 @@ $status = $has_review ? $review['status'] : '';
                     </div>
 
                     <div class="mb-4">
-                        <label for="comment" class="form-label fw-bold">Your Experience</label>
-                        <textarea class="form-control bg-light border-0 py-3" id="comment" name="comment" rows="5" placeholder="Tell us how PAG-AMUMA has guided your pregnancy journey..."><?= htmlspecialchars($comment) ?></textarea>
+                        <label for="comment" class="form-label fw-bold" data-i18n="your_experience">Your Experience</label>
+                        <textarea class="form-control bg-light border-0 py-3" id="comment" name="comment" rows="5" placeholder="Tell us how PAG-AMUMA has guided your pregnancy journey..." data-i18n-placeholder="comment_placeholder"><?= htmlspecialchars($comment) ?></textarea>
                     </div>
 
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm" id="submitReviewBtn">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill fw-bold shadow-sm" id="submitReviewBtn" data-i18n="<?= $has_review ? 'update_review_btn' : 'submit_review_btn' ?>">
                             <?= $has_review ? 'Update Review' : 'Submit Review' ?>
                         </button>
                     </div>

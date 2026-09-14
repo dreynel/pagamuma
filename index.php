@@ -1,9 +1,16 @@
 <?php
 require_once 'config/db.php';
+$hiligaynonVideos = require 'config/hiligaynon_videos.php';
 
 // Fetch up to 3 approved reviews
 $stmtReviews = $pdo->query("SELECT r.*, u.first_name, u.last_name FROM system_reviews r JOIN users u ON r.user_id = u.id WHERE r.status = 'approved' ORDER BY r.created_at DESC LIMIT 3");
 $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
+
+// Accurate platform statistics queried live from database
+$totalMothers = (int)$pdo->query("SELECT count(*) FROM users WHERE role = 'mother'")->fetchColumn();
+$totalQuestions = (int)$pdo->query("SELECT count(*) FROM chat_messages WHERE sender_type = 'user'")->fetchColumn();
+$totalChapters = (int)$pdo->query("SELECT count(*) FROM educational_modules")->fetchColumn();
+$totalLanguages = 3; // English, Hiligaynon, Tagalog
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,21 +28,29 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .hero-public {
-            background-image: linear-gradient(135deg, rgba(255, 205, 210, 0.8), rgba(255, 243, 224, 0.8)), url('assets/images/bg.png');
+            background-image: linear-gradient(135deg, rgba(255, 205, 210, 0.82), rgba(255, 243, 224, 0.85)), url('assets/images/bg.png');
             background-size: cover;
             background-position: center;
-            padding: 120px 0;
-            border-bottom: 5px solid var(--primary-color);
+            padding: 110px 0 90px;
+            border-bottom: 4px solid var(--primary-color);
         }
         .resource-card {
-            transition: transform 0.3s;
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 16px;
         }
-        .resource-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(229, 115, 115, 0.2);
+        .backdrop-blur {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .shadow-xs {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .navbar-public {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
         /* ===== Floating Chat Widget ===== */
         #chatWidgetBtn {
@@ -259,30 +274,36 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
 <body class="bg-light">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-light navbar-public py-3 shadow-xs sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.php">
-                <div class="logo-circle-mobile me-3 d-flex align-items-center justify-content-center" style="width:45px;height:45px;background-color:var(--primary-light);border-radius:50%;">
+                <div class="logo-circle-mobile me-2 d-flex align-items-center justify-content-center shadow-sm" style="width:42px;height:42px;background: linear-gradient(135deg, var(--primary-light), #fff);border-radius:50%;border:1px solid rgba(229,115,115,0.25);">
                     <i class="fa-solid fa-child-reaching text-primary fs-5"></i>
                 </div>
-                <span class="fw-bold text-primary fs-4">PAG-AMUMA</span>
+                <span class="fw-bold text-primary fs-4 tracking-tight">PAG-AMUMA</span>
             </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center mt-3 mt-lg-0">
-                    <li class="nav-item me-lg-4 mb-2 mb-lg-0">
-                        <a class="nav-link fw-medium text-dark px-0 hover-primary" href="#" data-i18n="nav_home">Home</a>
+                    <li class="nav-item me-lg-3 mb-2 mb-lg-0">
+                        <a class="nav-link fw-medium text-dark px-2 hover-primary" href="#" data-i18n="nav_home">Home</a>
                     </li>
-                    <li class="nav-item me-lg-4 mb-2 mb-lg-0">
-                        <a class="nav-link fw-medium text-dark px-0 hover-primary" href="#resources" data-i18n="nav_resources">Resources</a>
+                    <li class="nav-item me-lg-3 mb-2 mb-lg-0">
+                        <a class="nav-link fw-medium text-dark px-2 hover-primary" href="#how-it-works" data-i18n="how_it_works_title">How It Works</a>
                     </li>
-                    <li class="nav-item me-lg-4 mb-2 mb-lg-0">
-                        <a class="nav-link fw-medium text-dark px-0 hover-primary" href="#about" data-i18n="nav_about">About Us</a>
+                    <li class="nav-item me-lg-3 mb-2 mb-lg-0">
+                        <a class="nav-link fw-medium text-dark px-2 hover-primary" href="#resources" data-i18n="nav_resources">Resources</a>
                     </li>
-                    <li class="nav-item me-lg-4 mb-3 mb-lg-0">
-                        <select class="form-select border-0 bg-light text-secondary fw-medium shadow-sm py-2 px-3 rounded-pill" id="languageSelector">
+                    <li class="nav-item me-lg-3 mb-2 mb-lg-0">
+                        <a class="nav-link fw-medium text-dark px-2 hover-primary" href="#videos" data-i18n="videos_title">Videos</a>
+                    </li>
+                    <li class="nav-item me-lg-3 mb-2 mb-lg-0">
+                        <a class="nav-link fw-medium text-dark px-2 hover-primary" href="#about" data-i18n="nav_about">About Us</a>
+                    </li>
+                    <li class="nav-item me-lg-3 mb-3 mb-lg-0">
+                        <select class="form-select border-0 bg-light text-secondary fw-medium shadow-xs py-2 px-3 rounded-pill" id="languageSelector" aria-label="Language selection">
                             <option value="en">English</option>
                             <option value="hil">Hiligaynon</option>
                             <option value="tl">Tagalog</option>
@@ -297,61 +318,171 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-public text-center position-relative">
-        <div class="container position-relative z-index-1">
+    <section class="hero-public position-relative overflow-hidden">
+        <div class="container position-relative z-index-1 text-center py-4">
             <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="logo-circle mx-auto mb-4 border-white border-4" style="width:120px;height:120px;">
+                <div class="col-lg-9 col-xl-8">
+                    <!-- Trust Pill Badge -->
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white shadow-sm mb-4 border border-white-50">
+                        <span class="badge bg-danger rounded-pill px-2.5 py-1 small fw-bold">ISO 25010</span>
+                        <span class="text-dark fw-semibold small" data-i18n="hero_badge">✨ ISO 25010 Evaluated • 100% Free & Open</span>
+                    </div>
+
+                    <div class="logo-circle mx-auto mb-4 border-white border-4 shadow-md" style="width:110px;height:110px;background: linear-gradient(135deg, rgba(229,115,115,0.9), rgba(255,183,77,0.9));">
                         <i class="fa-solid fa-child-reaching fs-1 text-white"></i>
                     </div>
-                    <h1 class="display-3 fw-bold text-dark mb-4" data-i18n="public_hero_title">Welcome to PAG-AMUMA</h1>
-                    <p class="lead text-dark fw-medium mb-5 px-3 fs-4" data-i18n="hero_desc">A Web-based Health Support and Learning Platform for Early Pregnancy Women</p>
-                    <a href="#resources" class="btn btn-light btn-lg px-5 py-3 rounded-pill fw-bold text-primary shadow-lg" data-i18n="explore_resources">Explore Resources</a>
+
+                    <h1 class="display-4 fw-bold text-dark mb-3" data-i18n="public_hero_title">Welcome to PAG-AMUMA</h1>
+                    <p class="lead text-dark fw-medium mb-4 px-lg-4 fs-5 lh-base" data-i18n="hero_desc">A Web-based Health Support and Learning Platform for Early Pregnancy Women</p>
+
+                    <!-- Dual Action Buttons -->
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mb-5">
+                        <a href="#resources" class="btn btn-primary btn-lg px-4 py-3 rounded-pill fw-bold shadow-lg" data-i18n="explore_resources">Explore Resources</a>
+                        <button type="button" class="btn btn-white btn-lg px-4 py-3 rounded-pill fw-bold text-dark shadow-sm bg-white border" onclick="document.getElementById('chatWidgetBtn').click();">
+                            <i class="fa-solid fa-wand-magic-sparkles text-primary me-2"></i><span data-i18n="btn_chat_ai">Ask AI Assistant</span>
+                        </button>
+                    </div>
+
+                    <!-- Quick Trust / Proof Bar -->
+                    <div class="row g-2 justify-content-center pt-2">
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center gap-2 bg-white bg-opacity-80 px-3 py-2 rounded-pill shadow-xs border border-white">
+                                <i class="fa-solid fa-video text-danger"></i>
+                                <span class="small fw-semibold text-secondary">8 Hiligaynon Videos</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center gap-2 bg-white bg-opacity-80 px-3 py-2 rounded-pill shadow-xs border border-white">
+                                <i class="fa-solid fa-robot text-primary"></i>
+                                <span class="small fw-semibold text-secondary">Trilingual AI Guide</span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="d-flex align-items-center gap-2 bg-white bg-opacity-80 px-3 py-2 rounded-pill shadow-xs border border-white">
+                                <i class="fa-solid fa-heart-pulse text-success"></i>
+                                <span class="small fw-semibold text-secondary">Daily Vitals Logging</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How PAG-AMUMA Works (3-Step Visual Guide) -->
+    <section id="how-it-works" class="py-5 bg-white border-bottom">
+        <div class="container py-4">
+            <div class="text-center mb-5 pb-2">
+                <span class="badge badge-soft-primary rounded-pill px-3 py-2 mb-2 fw-bold text-uppercase" style="letter-spacing:0.05em;">Simple &amp; Accessible</span>
+                <h2 class="display-6 fw-bold text-dark mb-2" data-i18n="how_it_works_title">How PAG-AMUMA Works</h2>
+                <p class="text-muted fs-5" data-i18n="how_it_works_subtitle">Three simple steps to guide you through a safe and healthy pregnancy.</p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <!-- Step 1 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 rounded-4 p-4 text-center card-hover bg-light position-relative">
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-white text-muted border rounded-circle shadow-xs" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;">1</span>
+                        </div>
+                        <div class="my-3">
+                            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width:72px;height:72px;background:rgba(229,115,115,0.15);color:var(--primary-color);">
+                                <i class="fa-solid fa-book-open-reader fs-2"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-2" data-i18n="step1_title">1. Watch &amp; Read</h4>
+                        <p class="text-muted small mb-0 px-2 line-height-lg" data-i18n="step1_desc">Learn from curated health modules and exclusive Hiligaynon video guides.</p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 rounded-4 p-4 text-center card-hover bg-light position-relative">
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-white text-muted border rounded-circle shadow-xs" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;">2</span>
+                        </div>
+                        <div class="my-3">
+                            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width:72px;height:72px;background:rgba(124,58,237,0.15);color:#7c3aed;">
+                                <i class="fa-solid fa-comments fs-2"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-2" data-i18n="step2_title">2. Ask in Your Language</h4>
+                        <p class="text-muted small mb-0 px-2 line-height-lg" data-i18n="step2_desc">Get instant answers 24/7 in Hiligaynon, Tagalog, or English from our AI Assistant.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 rounded-4 p-4 text-center card-hover bg-light position-relative">
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-white text-muted border rounded-circle shadow-xs" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-weight:700;">3</span>
+                        </div>
+                        <div class="my-3">
+                            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width:72px;height:72px;background:rgba(16,185,129,0.15);color:#10b981;">
+                                <i class="fa-solid fa-clipboard-check fs-2"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-2" data-i18n="step3_title">3. Track with Care</h4>
+                        <p class="text-muted small mb-0 px-2 line-height-lg" data-i18n="step3_desc">Log your weight, BP, and symptoms for RHU health staff to assess and advise.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Resources Section -->
-    <section id="resources" class="py-5 mt-4">
+    <section id="resources" class="py-5 bg-light">
         <div class="container py-4">
-            <div class="text-center mb-5 pb-3">
-                <h2 class="display-6 fw-bold text-dark mb-3" data-i18n="resources_title">Educational Materials</h2>
+            <div class="text-center mb-5 pb-2">
+                <span class="badge badge-soft-primary rounded-pill px-3 py-2 mb-2 fw-bold text-uppercase" style="letter-spacing:0.05em;">Open Knowledge</span>
+                <h2 class="display-6 fw-bold text-dark mb-2" data-i18n="resources_title">Educational Materials</h2>
                 <p class="text-muted fs-5" data-i18n="resources_subtitle">Access free, open resources to support your pregnancy journey.</p>
             </div>
             
             <div class="row g-4">
                 <!-- Resource 1 -->
                 <div class="col-md-4">
-                    <div class="card resource-card h-100 p-4 text-center bg-white">
+                    <div class="card resource-card card-hover h-100 p-4 text-center bg-white rounded-4 shadow-sm border-0">
                         <div class="mb-4 mt-2">
-                            <i class="fa-solid fa-book-medical fs-1 text-primary p-4 bg-primary-light rounded-circle"></i>
+                            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width:76px;height:76px;background:var(--primary-soft);color:var(--primary-color);">
+                                <i class="fa-solid fa-book-medical fs-2"></i>
+                            </div>
                         </div>
                         <h4 class="fw-bold text-dark mb-3" data-i18n="menu_health">Health Modules</h4>
-                        <p class="text-muted flex-grow-1 px-2 line-height-lg" data-i18n="health_desc">Learn about nutrition, prenatal vitamins, and safe exercises during your early pregnancy.</p>
-                        <a href="guest_modules.php?category=health" class="btn btn-outline-primary rounded-pill mt-3 fw-medium py-2 px-4 shadow-sm">Read More</a>
+                        <p class="text-muted flex-grow-1 px-2 line-height-lg small" data-i18n="health_desc">Learn about nutrition, prenatal vitamins, and safe exercises during your early pregnancy.</p>
+                        <a href="guest_modules.php?category=health" class="btn btn-outline-primary rounded-pill mt-3 fw-medium py-2 px-4 shadow-sm hover-arrow">
+                            <span data-i18n="read_chapter">Read Chapter</span> <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
                 </div>
                 <!-- Resource 2 -->
                 <div class="col-md-4">
-                    <div class="card resource-card h-100 p-4 text-center bg-white">
+                    <div class="card resource-card card-hover h-100 p-4 text-center bg-white rounded-4 shadow-sm border-0">
                         <div class="mb-4 mt-2">
-                            <i class="fa-solid fa-baby-carriage fs-1 text-primary p-4 bg-primary-light rounded-circle"></i>
+                            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width:76px;height:76px;background:rgba(255,183,77,0.18);color:#d97706;">
+                                <i class="fa-solid fa-baby-carriage fs-2"></i>
+                            </div>
                         </div>
                         <h4 class="fw-bold text-dark mb-3" data-i18n="menu_parenting">Parenting Basics</h4>
-                        <p class="text-muted flex-grow-1 px-2" data-i18n="parenting_desc">Prepare for your baby's arrival with guides on baby care, sleep schedules, and essential gear.</p>
-                        <a href="guest_modules.php?category=parenting" class="btn btn-outline-primary rounded-pill mt-3 fw-medium py-2 px-4 shadow-sm">Read More</a>
+                        <p class="text-muted flex-grow-1 px-2 line-height-lg small" data-i18n="parenting_desc">Prepare for your baby's arrival with guides on baby care, sleep schedules, and essential gear.</p>
+                        <a href="guest_modules.php?category=parenting" class="btn btn-outline-primary rounded-pill mt-3 fw-medium py-2 px-4 shadow-sm hover-arrow">
+                            <span data-i18n="read_chapter">Read Chapter</span> <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
                 </div>
                 <!-- Resource 3 -->
                 <div class="col-md-4">
-                    <div class="card resource-card h-100 p-4 text-center bg-white">
+                    <div class="card resource-card card-hover h-100 p-4 text-center bg-white rounded-4 shadow-sm border-0">
                         <div class="mb-4 mt-2">
-                            <i class="fa-solid fa-heart-pulse fs-1 text-primary p-4 bg-primary-light rounded-circle"></i>
+                            <div class="mx-auto rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width:76px;height:76px;background:rgba(124,58,237,0.12);color:#7c3aed;">
+                                <i class="fa-solid fa-heart-pulse fs-2"></i>
+                            </div>
                         </div>
                         <h4 class="fw-bold text-dark mb-3" data-i18n="menu_emotional">Emotional Support</h4>
-                        <p class="text-muted flex-grow-1 px-2" data-i18n="emotional_desc">Navigate the emotional changes of pregnancy with mindfulness exercises and community support.</p>
-                        <a href="guest_modules.php?category=emotional" class="btn btn-outline-primary rounded-pill mt-3 fw-medium py-2 px-4 shadow-sm">Read More</a>
+                        <p class="text-muted flex-grow-1 px-2 line-height-lg small" data-i18n="emotional_desc">Navigate the emotional changes of pregnancy with mindfulness exercises and community support.</p>
+                        <a href="guest_modules.php?category=emotional" class="btn btn-outline-primary rounded-pill mt-3 fw-medium py-2 px-4 shadow-sm hover-arrow">
+                            <span data-i18n="read_chapter">Read Chapter</span> <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -364,29 +495,35 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
             <div class="row align-items-center mb-5">
                 <div class="col-lg-6 mb-4 mb-lg-0">
                     <div class="pe-lg-5">
-                        <span class="badge bg-primary-light text-primary rounded-pill px-3 py-2 mb-3 fw-bold" data-i18n="feat_badge">Why Choose PAG-AMUMA</span>
+                        <span class="badge badge-soft-primary rounded-pill px-3 py-2 mb-3 fw-bold" data-i18n="feat_badge">Why Choose PAG-AMUMA</span>
                         <h2 class="display-5 fw-bold text-dark mb-4" data-i18n="feat_title">Your Complete Pregnancy Companion</h2>
                         <p class="lead text-muted mb-4" data-i18n="feat_desc">We've designed a specialized platform that combines medical guidance, emotional support, and smart tracking—all in your local language.</p>
                         
-                        <div class="d-flex align-items-start mb-4 bg-white p-3 rounded-4 shadow-sm hover-shadow transition-all">
-                            <i class="fa-solid fa-person-pregnant fs-3 text-primary bg-primary-light p-3 rounded-circle me-4"></i>
+                        <div class="d-flex align-items-start mb-4 bg-white p-3 rounded-4 shadow-sm card-hover">
+                            <div class="p-3 rounded-circle me-3 flex-shrink-0 d-flex align-items-center justify-content-center" style="width:54px;height:54px;background:rgba(229,115,115,0.15);color:var(--primary-color);">
+                                <i class="fa-solid fa-person-pregnant fs-4"></i>
+                            </div>
                             <div>
-                                <h5 class="fw-bold text-dark" data-i18n="feat1_title">Interactive Pregnancy Tracker</h5>
-                                <p class="text-muted mb-0 small" data-i18n="feat1_desc">Watch your baby grow week by week with beautiful visual insights and fruit size comparisons on your premium dashboard.</p>
+                                <h5 class="fw-bold text-dark mb-1" data-i18n="feat1_title">Interactive Pregnancy Tracker</h5>
+                                <p class="text-muted mb-0 small line-height-lg" data-i18n="feat1_desc">Watch your baby grow week by week with beautiful visual insights and fruit size comparisons on your premium dashboard.</p>
                             </div>
                         </div>
-                        <div class="d-flex align-items-start mb-4 bg-white p-3 rounded-4 shadow-sm hover-shadow transition-all">
-                            <i class="fa-solid fa-heart-pulse fs-3 text-danger bg-danger-subtle p-3 rounded-circle me-4"></i>
+                        <div class="d-flex align-items-start mb-4 bg-white p-3 rounded-4 shadow-sm card-hover">
+                            <div class="p-3 rounded-circle me-3 flex-shrink-0 d-flex align-items-center justify-content-center" style="width:54px;height:54px;background:rgba(239,68,68,0.12);color:#dc2626;">
+                                <i class="fa-solid fa-heart-pulse fs-4"></i>
+                            </div>
                             <div>
-                                <h5 class="fw-bold text-dark" data-i18n="feat2_title">Smart Vitals Logging</h5>
-                                <p class="text-muted mb-0 small" data-i18n="feat2_desc">Keep a secure digital history of your weight, blood pressure, and daily symptoms automatically graphed for your next doctor's visit.</p>
+                                <h5 class="fw-bold text-dark mb-1" data-i18n="feat2_title">Smart Vitals Logging</h5>
+                                <p class="text-muted mb-0 small line-height-lg" data-i18n="feat2_desc">Keep a secure digital history of your weight, blood pressure, and daily symptoms automatically graphed for your next doctor's visit.</p>
                             </div>
                         </div>
-                        <div class="d-flex align-items-start bg-white p-3 rounded-4 shadow-sm hover-shadow transition-all">
-                            <i class="fa-solid fa-language fs-3 text-success bg-success-subtle p-3 rounded-circle me-4"></i>
+                        <div class="d-flex align-items-start bg-white p-3 rounded-4 shadow-sm card-hover">
+                            <div class="p-3 rounded-circle me-3 flex-shrink-0 d-flex align-items-center justify-content-center" style="width:54px;height:54px;background:rgba(16,185,129,0.12);color:#059669;">
+                                <i class="fa-solid fa-language fs-4"></i>
+                            </div>
                             <div>
-                                <h5 class="fw-bold text-dark" data-i18n="feat3_title">Localized AI Chatbot</h5>
-                                <p class="text-muted mb-0 small" data-i18n="feat3_desc">Our generative AI assistant is specifically trained to understand and reply naturally in English, Hiligaynon, and Tagalog 24/7.</p>
+                                <h5 class="fw-bold text-dark mb-1" data-i18n="feat3_title">Localized AI Chatbot</h5>
+                                <p class="text-muted mb-0 small line-height-lg" data-i18n="feat3_desc">Our generative AI assistant is specifically trained to understand and reply naturally in English, Hiligaynon, and Tagalog 24/7.</p>
                             </div>
                         </div>
                     </div>
@@ -394,21 +531,28 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
                 <div class="col-lg-6 position-relative">
                     <!-- Decorative background element -->
                     <div class="position-absolute top-50 start-50 translate-middle bg-primary opacity-25 rounded-circle" style="width: 400px; height: 400px; filter: blur(60px); z-index: 0;"></div>
-                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative z-index-1 mx-auto" style="max-width: 400px; background: linear-gradient(135deg, #fff0f5, #fff);">
-                        <div class="p-5 text-center">
-                            <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg mb-4 mx-auto" style="width:120px;height:120px;">
-                                <i class="fa-solid fa-lemon fs-1"></i>
+                    <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative z-index-1 mx-auto" style="max-width: 420px; background: linear-gradient(135deg, #fff0f5, #fff);">
+                        <div class="p-4 p-md-5 text-center">
+                            <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center shadow-md mb-4 mx-auto" style="width:110px;height:110px;border: 3px solid rgba(229,115,115,0.2);">
+                                <i class="fa-solid fa-lemon fs-1 text-warning"></i>
                             </div>
-                            <h3 class="fw-bold mb-2 text-dark">Week 14</h3>
+                            <span class="badge badge-soft-primary rounded-pill px-3 py-1 mb-2 fw-semibold">Dashboard Preview</span>
+                            <h3 class="fw-bold mb-1 text-dark">Week 14</h3>
                             <p class="text-secondary mb-4 fw-medium">Your baby is the size of a Lemon!</p>
                             <div class="progress bg-light shadow-inner mb-3" style="height: 12px; border-radius: 10px;">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-gradient-primary" style="width: 35%; background: linear-gradient(90deg, #7c3aed, #ec4899);"></div>
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 35%; background: linear-gradient(90deg, #7c3aed, #ec4899);"></div>
                             </div>
-                            <small class="text-muted fw-bold">35% Complete</small>
+                            <div class="d-flex justify-content-between small text-muted fw-semibold mb-3">
+                                <span>1st Trimester</span>
+                                <span class="text-primary fw-bold">35% Complete</span>
+                                <span>40 Weeks</span>
+                            </div>
                             
-                            <hr class="my-4 text-muted opacity-25">
+                            <hr class="my-3 text-muted opacity-25">
                             
-                            <p class="text-dark small fst-italic mb-0">"The golden trimester begins! Notice your energy returning."</p>
+                            <div class="p-3 bg-white bg-opacity-75 rounded-3 border border-white">
+                                <p class="text-dark small fst-italic mb-0">"The golden trimester begins! Notice your energy returning."</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -419,107 +563,166 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
     <!-- Video Resources Section -->
     <section id="videos" class="py-5 bg-white">
         <div class="container py-4">
-            <div class="text-center mb-5 pb-3">
-                <h2 class="display-6 fw-bold text-dark mb-3" data-i18n="videos_title">Watch & Learn</h2>
+            <div class="text-center mb-5 pb-2">
+                <span class="badge badge-soft-danger rounded-pill px-3 py-2 mb-2 fw-bold text-uppercase" style="letter-spacing:0.05em;">Visual Guides</span>
+                <h2 class="display-6 fw-bold text-dark mb-2" data-i18n="videos_title">Watch & Learn</h2>
                 <p class="text-muted fs-5" data-i18n="videos_subtitle">Video guides and expert advice for your pregnancy journey.</p>
             </div>
-            
-            <div class="row g-4 justify-content-center">
-                <!-- Video 1 -->
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card resource-card h-100 border-0 shadow-sm overflow-hidden bg-light">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/Qn7ouVsH0No" title="Pwede ba Magbreastfeed Kahit May Sakit si Mommy?" allowfullscreen></iframe>
+
+            <!-- Featured Local Hiligaynon Video Modules -->
+            <div class="mb-5">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 pb-2 border-bottom">
+                    <div>
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-danger-subtle text-danger rounded-pill small fw-semibold mb-2">
+                            <i class="fa-solid fa-volume-high"></i> <span data-i18n="video_hil">Hiligaynon Video</span>
                         </div>
-                        <div class="card-body p-4 text-start">
-                            <span class="badge bg-danger mb-2">Breastfeeding</span>
-                            <h5 class="fw-semibold text-dark mb-2">Breastfeeding w/ Illness</h5>
-                            <p class="card-text text-muted mb-0 small">Doc Leila (OB-GYN) talks about breastfeeding safely while sick.</p>
-                        </div>
+                        <h3 class="fw-bold text-dark mb-1" data-i18n="hil_videos_title">Hiligaynon Maternal Health Videos</h3>
+                        <p class="text-muted mb-0" data-i18n="hil_videos_subtitle">Exclusive localized video guides in Hiligaynon for expecting mothers.</p>
+                    </div>
+                    <div>
+                        <span class="badge bg-danger rounded-pill px-3 py-2 fw-medium shadow-sm"><i class="fa-solid fa-video me-1"></i> 8 Hiligaynon Modules</span>
                     </div>
                 </div>
-                <!-- Video 2 -->
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card resource-card h-100 border-0 shadow-sm overflow-hidden bg-light">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/GsMVhp3Qw58" title="Puwede at Bawal Kainin para sa Buntis" allowfullscreen></iframe>
+
+                <div class="row g-4">
+                    <?php foreach ($hiligaynonVideos as $v): ?>
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <div class="card resource-card card-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                                <div class="ratio ratio-16x9 bg-dark">
+                                    <video controls preload="metadata" playsinline class="w-100 h-100" style="object-fit: contain;">
+                                        <source src="video2/<?= htmlspecialchars($v['file']) ?>" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="card-body p-3 text-start d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge badge-soft-danger fw-semibold" style="font-size: 0.72rem;">
+                                            <i class="fa-solid fa-microphone-lines me-1"></i> Hiligaynon
+                                        </span>
+                                        <span class="badge bg-light text-secondary border fw-medium" style="font-size: 0.72rem;">
+                                            <?= htmlspecialchars($v['badge']) ?>
+                                        </span>
+                                    </div>
+                                    <h6 class="fw-semibold text-dark mb-1"><?= htmlspecialchars($v['title']) ?></h6>
+                                    <p class="card-text text-muted mb-0 small flex-grow-1 line-height-lg"><?= htmlspecialchars($v['desc']) ?></p>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body p-4 text-start">
-                            <span class="badge bg-primary mb-2">Nutrition</span>
-                            <h5 class="fw-semibold text-dark mb-2">Puwede at Bawal Kainin</h5>
-                            <p class="card-text text-muted mb-0 small">Doc Willie Ong's advice on what foods are safe and what to avoid.</p>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Supplemental Health Videos -->
+            <div class="mt-5 pt-3">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 pb-2 border-bottom">
+                    <div>
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-primary-subtle text-primary rounded-pill small fw-semibold mb-2">
+                            <i class="fa-brands fa-youtube"></i> Supplemental Resources
                         </div>
+                        <h3 class="fw-bold text-dark mb-1" data-i18n="youtube_videos_title">Supplemental Health Videos</h3>
+                        <p class="text-muted mb-0" data-i18n="youtube_videos_subtitle">Additional medical advice and pregnancy guides.</p>
                     </div>
                 </div>
-                <!-- Video 3 -->
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card resource-card h-100 border-0 shadow-sm overflow-hidden bg-light">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/PoflO66C6iY" title="16 Prutas at Pagkain na Bawal sa Buntis" allowfullscreen></iframe>
-                        </div>
-                        <div class="card-body p-4 text-start">
-                            <span class="badge bg-success mb-2">Nutrition</span>
-                            <h5 class="fw-semibold text-dark mb-2">16 Prutas na Bawal</h5>
-                            <p class="card-text text-muted mb-0 small">Learn about specific fruits and foods that could be harmful to the baby.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Video 4 -->
-                <div class="col-12 col-md-6 col-lg-3">
-                    <div class="card resource-card h-100 border-0 shadow-sm overflow-hidden bg-light">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/6iK9yUPYHAY" title="Sobrang Pagduduwal at Pagsusuka - Morning Sickness" allowfullscreen></iframe>
-                        </div>
-                        <div class="card-body p-4 text-start">
-                            <span class="badge bg-info mb-2 text-dark">Morning Sickness</span>
-                            <h5 class="fw-semibold text-dark mb-2">Pagduduwal at Pagsusuka</h5>
-                            <p class="card-text text-muted mb-0 small">Ate Nurse shares tips on how to handle severe morning sickness.</p>
+
+                <div class="row g-4 justify-content-center">
+                    <!-- Video 1 -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card resource-card card-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/Qn7ouVsH0No" title="Pwede ba Magbreastfeed Kahit May Sakit si Mommy?" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <div class="card-body p-3 text-start">
+                                <span class="badge badge-soft-danger mb-2">Breastfeeding</span>
+                                <h6 class="fw-semibold text-dark mb-1">Breastfeeding w/ Illness</h6>
+                                <p class="card-text text-muted mb-0 small line-height-lg">Doc Leila (OB-GYN) talks about breastfeeding safely while sick.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Video 5 -->
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card resource-card h-100 border-0 shadow-sm overflow-hidden bg-light">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/SeKIZy-1tDA" title="5 Pregnancy Tips You Should Not Ignore" allowfullscreen></iframe>
-                        </div>
-                        <div class="card-body p-4 text-start">
-                            <span class="badge bg-warning mb-2 text-dark">General Tips</span>
-                            <h5 class="fw-semibold text-dark mb-2">5 Pregnancy Tips</h5>
-                            <p class="card-text text-muted mb-0 small">Important pregnancy practices you shouldn't ignore for a healthy birth.</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Video 6 -->
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card resource-card h-100 border-0 shadow-sm overflow-hidden bg-light">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/aOxu0JTiwDY" title="Senyales na Malapit ng Manganak" allowfullscreen></iframe>
-                        </div>
-                        <div class="card-body p-4 text-start">
-                            <span class="badge bg-danger mb-2">Preparation</span>
-                            <h5 class="fw-semibold text-dark mb-2">Senyales na Malapit ng Manganak</h5>
-                            <p class="card-text text-muted mb-0 small">Ate Nurse points out the signs to look for when labor is approaching.</p>
+                    <!-- Video 2 -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card resource-card card-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/GsMVhp3Qw58" title="Puwede at Bawal Kainin para sa Buntis" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <div class="card-body p-3 text-start">
+                                <span class="badge badge-soft-primary mb-2">Nutrition</span>
+                                <h6 class="fw-semibold text-dark mb-1">Puwede at Bawal Kainin</h6>
+                                <p class="card-text text-muted mb-0 small line-height-lg">Doc Willie Ong's advice on what foods are safe and what to avoid.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Video 7 -->
-                <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card resource-card h-100 border-0 shadow-sm overflow-hidden bg-light">
-                        <div class="ratio ratio-16x9">
-                            <iframe src="https://www.youtube.com/embed/yZAWU8rCEQs" title="Senyales na Hindi Safe ang Baby sa Tiyan" allowfullscreen></iframe>
+                    <!-- Video 3 -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card resource-card card-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/PoflO66C6iY" title="16 Prutas at Pagkain na Bawal sa Buntis" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <div class="card-body p-3 text-start">
+                                <span class="badge badge-soft-success mb-2">Nutrition</span>
+                                <h6 class="fw-semibold text-dark mb-1">16 Prutas na Bawal</h6>
+                                <p class="card-text text-muted mb-0 small line-height-lg">Learn about specific fruits and foods that could be harmful to the baby.</p>
+                            </div>
                         </div>
-                        <div class="card-body p-4 text-start">
-                            <span class="badge bg-secondary mb-2">Pre-Caution</span>
-                            <h5 class="fw-semibold text-dark mb-2">Warning Signs</h5>
-                            <p class="card-text text-muted mb-0 small">Nurse Yeza outlines the symptoms that indicate your baby might not be safe.</p>
+                    </div>
+                    <!-- Video 4 -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card resource-card card-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/6iK9yUPYHAY" title="Sobrang Pagduduwal at Pagsusuka - Morning Sickness" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <div class="card-body p-3 text-start">
+                                <span class="badge badge-soft-purple mb-2">Morning Sickness</span>
+                                <h6 class="fw-semibold text-dark mb-1">Pagduduwal at Pagsusuka</h6>
+                                <p class="card-text text-muted mb-0 small line-height-lg">Ate Nurse shares tips on how to handle severe morning sickness.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Video 5 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card resource-card card-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/SeKIZy-1tDA" title="5 Pregnancy Tips You Should Not Ignore" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <div class="card-body p-3 text-start">
+                                <span class="badge badge-soft-amber mb-2">General Tips</span>
+                                <h6 class="fw-semibold text-dark mb-1">5 Pregnancy Tips</h6>
+                                <p class="card-text text-muted mb-0 small line-height-lg">Important pregnancy practices you shouldn't ignore for a healthy birth.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Video 6 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card resource-card card-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/aOxu0JTiwDY" title="Senyales na Malapit ng Manganak" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <div class="card-body p-3 text-start">
+                                <span class="badge badge-soft-danger mb-2">Preparation</span>
+                                <h6 class="fw-semibold text-dark mb-1">Senyales na Malapit ng Manganak</h6>
+                                <p class="card-text text-muted mb-0 small line-height-lg">Ate Nurse points out the signs to look for when labor is approaching.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Video 7 -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card resource-card card-hover h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                            <div class="ratio ratio-16x9">
+                                <iframe src="https://www.youtube.com/embed/yZAWU8rCEQs" title="Senyales na Hindi Safe ang Baby sa Tiyan" allowfullscreen loading="lazy"></iframe>
+                            </div>
+                            <div class="card-body p-3 text-start">
+                                <span class="badge badge-soft-purple mb-2">Pre-Caution</span>
+                                <h6 class="fw-semibold text-dark mb-1">Warning Signs</h6>
+                                <p class="card-text text-muted mb-0 small line-height-lg">Nurse Yeza outlines the symptoms that indicate your baby might not be safe.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="text-center mt-5">
-                <a href="login.php" class="btn btn-outline-primary rounded-pill px-4 py-2 fw-medium shadow-sm">View All Videos <i class="fa-solid fa-arrow-right ms-2"></i></a>
+                <a href="login.php" class="btn btn-outline-primary rounded-pill px-4 py-2 fw-medium shadow-sm hover-arrow">
+                    <span>View All Videos</span> <i class="fa-solid fa-arrow-right ms-2"></i>
+                </a>
             </div>
         </div>
     </section>
@@ -529,24 +732,37 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
         <div class="container py-4">
             <div class="row text-center text-white g-4">
                 <div class="col-6 col-md-3">
-                    <i class="fa-solid fa-users fs-1 mb-3 opacity-75"></i>
-                    <h2 class="display-4 fw-bold mb-0">1,200+</h2>
-                    <p class="lead mb-0 text-white-50" data-i18n="stat_1">Local Mothers</p>
+                    <div class="p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-25 h-100 shadow-sm">
+                        <i class="fa-solid fa-users fs-2 mb-3 text-white opacity-90"></i>
+                        <h2 class="display-5 fw-bold mb-1">1,200+</h2>
+                        <p class="lead mb-0 text-white-50 small fw-medium" data-i18n="stat_1">Local Mothers</p>
+                        <h2 class="display-5 fw-bold mb-1"><?= $totalMothers ?></h2>
+                        <p class="lead mb-0 text-white-50 small fw-medium" data-i18n="stat_1">Registered Mothers</p>
+                    </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <i class="fa-regular fa-comments fs-1 mb-3 opacity-75"></i>
-                    <h2 class="display-4 fw-bold mb-0">15k+</h2>
-                    <p class="lead mb-0 text-white-50" data-i18n="stat_2">Questions Answered</p>
+                    <div class="p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-25 h-100 shadow-sm">
+                        <i class="fa-regular fa-comments fs-2 mb-3 text-white opacity-90"></i>
+                        <h2 class="display-5 fw-bold mb-1">15k+</h2>
+                        <h2 class="display-5 fw-bold mb-1"><?= $totalQuestions ?></h2>
+                        <p class="lead mb-0 text-white-50 small fw-medium" data-i18n="stat_2">Questions Answered</p>
+                    </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <i class="fa-solid fa-book-open fs-1 mb-3 opacity-75"></i>
-                    <h2 class="display-4 fw-bold mb-0">40+</h2>
-                    <p class="lead mb-0 text-white-50" data-i18n="stat_3">Curated Chapters</p>
+                    <div class="p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-25 h-100 shadow-sm">
+                        <i class="fa-solid fa-book-open fs-2 mb-3 text-white opacity-90"></i>
+                        <h2 class="display-5 fw-bold mb-1">40+</h2>
+                        <h2 class="display-5 fw-bold mb-1"><?= $totalChapters ?></h2>
+                        <p class="lead mb-0 text-white-50 small fw-medium" data-i18n="stat_3">Curated Chapters</p>
+                    </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <i class="fa-solid fa-earth-asia fs-1 mb-3 opacity-75"></i>
-                    <h2 class="display-4 fw-bold mb-0">3</h2>
-                    <p class="lead mb-0 text-white-50" data-i18n="stat_4">Languages Supported</p>
+                    <div class="p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-25 h-100 shadow-sm">
+                        <i class="fa-solid fa-earth-asia fs-2 mb-3 text-white opacity-90"></i>
+                        <h2 class="display-5 fw-bold mb-1">3</h2>
+                        <h2 class="display-5 fw-bold mb-1"><?= $totalLanguages ?></h2>
+                        <p class="lead mb-0 text-white-50 small fw-medium" data-i18n="stat_4">Languages Supported</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -556,7 +772,8 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
     <section class="py-5 bg-light">
         <div class="container py-5">
             <div class="text-center mb-5 pb-2">
-                <h2 class="display-6 fw-bold text-dark mb-3" data-i18n="test_title">Loved by Mothers</h2>
+                <span class="badge badge-soft-primary rounded-pill px-3 py-2 mb-2 fw-bold text-uppercase" style="letter-spacing:0.05em;">Community Feedback</span>
+                <h2 class="display-6 fw-bold text-dark mb-2" data-i18n="test_title">Loved by Mothers</h2>
                 <p class="text-muted fs-5" data-i18n="test_subtitle">Read what other expecting mothers in our community have to say.</p>
             </div>
             
@@ -570,23 +787,28 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
                 <?php else: ?>
                     <?php foreach($recentReviews as $rev): ?>
                     <div class="col-md-4">
-                        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white hover-shadow transition-all">
-                            <ul class="list-inline text-warning mb-3">
-                                <?php for($i=1; $i<=5; $i++): ?>
-                                    <?php if($i <= $rev['rating']): ?>
-                                        <li class="list-inline-item m-0"><i class="fa-solid fa-star"></i></li>
-                                    <?php else: ?>
-                                        <li class="list-inline-item m-0"><i class="fa-solid fa-star text-muted" style="opacity:0.3"></i></li>
-                                    <?php endif; ?>
-                                <?php endfor; ?>
-                            </ul>
-                            <p class="text-dark fst-italic mb-4">"<?= htmlspecialchars($rev['comment']) ?>"</p>
+                        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white card-hover">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <ul class="list-inline text-warning mb-0">
+                                    <?php for($i=1; $i<=5; $i++): ?>
+                                        <?php if($i <= $rev['rating']): ?>
+                                            <li class="list-inline-item m-0"><i class="fa-solid fa-star"></i></li>
+                                        <?php else: ?>
+                                            <li class="list-inline-item m-0"><i class="fa-solid fa-star text-muted" style="opacity:0.3"></i></li>
+                                        <?php endif; ?>
+                                    <?php endfor; ?>
+                                </ul>
+                                <span class="badge badge-soft-success rounded-pill small" style="font-size: 0.72rem;">
+                                    <i class="fa-solid fa-circle-check me-1"></i>Verified Mother
+                                </span>
+                            </div>
+                            <p class="text-dark fst-italic mb-4 line-height-lg">"<?= htmlspecialchars($rev['comment']) ?>"</p>
                             <div class="d-flex align-items-center mt-auto border-top pt-3">
                                 <?php
                                     $bg_colors = ['e57373', 'a855f7', '4ade80', '60a5fa', 'fbbf24'];
                                     $bg = $bg_colors[array_rand($bg_colors)];
                                 ?>
-                                <img src="https://ui-avatars.com/api/?name=<?= urlencode($rev['first_name'].' '.$rev['last_name']) ?>&background=<?= $bg ?>&color=fff&rounded=true" alt="User" width="45" height="45" class="shadow-sm rounded-circle">
+                                <img src="https://ui-avatars.com/api/?name=<?= urlencode($rev['first_name'].' '.$rev['last_name']) ?>&background=<?= $bg ?>&color=fff&rounded=true" alt="User" width="45" height="45" class="shadow-xs rounded-circle">
                                 <div class="ms-3">
                                     <h6 class="fw-bold mb-0 text-dark"><?= htmlspecialchars($rev['first_name'] . ' ' . mb_substr($rev['last_name'], 0, 1) . '.') ?></h6>
                                     <small class="text-muted"><?= date('M d, Y', strtotime($rev['created_at'])) ?></small>
@@ -600,10 +822,39 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </section>
 
+    <!-- Call To Action (CTA) Banner -->
+    <section class="py-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, #fff5f5 0%, #ffffff 50%, #fff7ed 100%); border-top: 1px solid rgba(229,115,115,0.15); border-bottom: 1px solid rgba(229,115,115,0.15);">
+        <div class="container py-4 text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <span class="badge badge-soft-primary rounded-pill px-3 py-2 mb-3 fw-bold">
+                        <i class="fa-solid fa-heart me-1"></i> Free for Every Mother
+                    </span>
+                    <h2 class="display-6 fw-bold text-dark mb-3" data-i18n="cta_banner_title">Are You an Expecting Mother in Western Visayas?</h2>
+                    <p class="lead text-muted mb-4 px-lg-4 fs-6" data-i18n="cta_banner_subtitle">Join hundreds of mothers tracking their pregnancy journey with care, in your own language.</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-3">
+                        <a href="register.php" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow-lg hover-arrow" data-i18n="cta_register_now">
+                            <span>Create Free Account</span> <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="login.php" class="btn btn-outline-secondary btn-lg rounded-pill px-4 py-3 fw-semibold" data-i18n="nav_login">
+                            Login to Dashboard
+                        </a>
+                    </div>
+                    <div class="mt-4 text-muted small">
+                        <i class="fa-solid fa-shield-halved text-success me-1"></i> Safe, Confidential, &amp; Accessible on Any Device
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- About Us Section -->
     <section id="about" class="py-5" style="background-color: var(--primary-light);">
         <div class="container py-5 text-center">
-            <h2 class="display-6 fw-bold text-dark mb-4" data-i18n="nav_about">About Us</h2>
+            <div class="logo-circle-mobile mx-auto mb-3 d-flex align-items-center justify-content-center shadow-xs bg-white" style="width:50px;height:50px;">
+                <i class="fa-solid fa-circle-info text-primary fs-5"></i>
+            </div>
+            <h2 class="display-6 fw-bold text-dark mb-3" data-i18n="nav_about">About Us</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <p class="lead text-dark fw-medium lh-lg" data-i18n="about_desc">
@@ -615,9 +866,32 @@ $recentReviews = $stmtReviews->fetchAll(PDO::FETCH_ASSOC);
     </section>
 
     <!-- Footer -->
-    <footer class="bg-white py-4 border-top">
+    <footer class="bg-white py-5 border-top">
         <div class="container text-center">
-            <p class="text-muted mb-0 fw-medium">&copy; 2026 PAG-AMUMA. "Naga-ulikid sa imo ikaayong lawas kag sa imo lapsag."</p>
+            <!-- Medical Advisory Disclaimer Box -->
+            <div class="alert alert-light border border-secondary border-opacity-25 shadow-xs mx-auto mb-4 py-3 px-4 rounded-4" style="max-width: 820px;">
+                <div class="d-flex align-items-center justify-content-center gap-2 text-danger mb-1 fw-bold small">
+                    <i class="fa-solid fa-shield-heart"></i>
+                    <span>Medical Advisory &amp; Safe Care Notice</span>
+                </div>
+                <small class="text-muted d-block lh-base" data-i18n="footer_disclaimer">
+                    Medical Advisory: PAG-AMUMA provides supportive maternal health guidance. In medical emergencies, please visit your nearest Rural Health Unit (RHU) or hospital immediately.
+                </small>
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center gap-3 mb-3 text-muted small flex-wrap">
+                <a href="#how-it-works" class="text-decoration-none text-muted hover-primary" data-i18n="how_it_works_title">How It Works</a>
+                <span>&bull;</span>
+                <a href="#resources" class="text-decoration-none text-muted hover-primary" data-i18n="nav_resources">Resources</a>
+                <span>&bull;</span>
+                <a href="#videos" class="text-decoration-none text-muted hover-primary" data-i18n="videos_title">Videos</a>
+                <span>&bull;</span>
+                <a href="#about" class="text-decoration-none text-muted hover-primary" data-i18n="nav_about">About Us</a>
+                <span>&bull;</span>
+                <a href="login.php" class="text-decoration-none text-muted hover-primary" data-i18n="nav_login_btn">Login</a>
+            </div>
+
+            <p class="text-muted mb-0 small">&copy; 2026 PAG-AMUMA. "Naga-ulikid sa imo ikaayong lawas kag sa imo lapsag."</p>
         </div>
     </footer>
 

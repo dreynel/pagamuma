@@ -1,6 +1,7 @@
 <?php
 // c:\xampp\htdocs\pagamuma\guest_modules.php
 require_once 'config/db.php';
+$hiligaynonVideos = require 'config/hiligaynon_videos.php';
 
 $category = $_GET['category'] ?? 'health';
 $stmt = $pdo->prepare("SELECT * FROM educational_modules WHERE category = ?");
@@ -119,6 +120,47 @@ $title_key = "menu_" . $category;
                 </div>
                 <?php endforeach; ?>
             <?php endif; ?>
+        </div>
+
+        <!-- Featured Hiligaynon Video Modules -->
+        <div class="mt-5 pt-4 border-top">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4 pb-2 border-bottom">
+                <div>
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-danger-subtle text-danger rounded-pill small fw-semibold mb-2">
+                        <i class="fa-solid fa-volume-high"></i> <span data-i18n="video_hil">Hiligaynon Video</span>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1" data-i18n="hil_videos_title">Hiligaynon Maternal Health Videos</h3>
+                    <p class="text-muted mb-0" data-i18n="hil_videos_subtitle">Exclusive localized video guides in Hiligaynon for expecting mothers.</p>
+                </div>
+                <span class="badge bg-danger rounded-pill px-3 py-2 fw-medium shadow-sm"><i class="fa-solid fa-video me-1"></i> 8 Hiligaynon Modules</span>
+            </div>
+
+            <div class="row g-4">
+                <?php foreach ($hiligaynonVideos as $v): ?>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card resource-card h-100 border-0 shadow-sm overflow-hidden bg-white">
+                            <div class="ratio ratio-16x9 bg-dark">
+                                <video controls preload="metadata" playsinline class="w-100 h-100" style="object-fit: contain;">
+                                    <source src="video2/<?= htmlspecialchars($v['file']) ?>" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <div class="card-body p-3 text-start d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-danger-subtle text-danger fw-semibold" style="font-size: 0.72rem;">
+                                        <i class="fa-solid fa-microphone-lines me-1"></i> Hiligaynon
+                                    </span>
+                                    <span class="badge bg-light text-secondary border fw-medium" style="font-size: 0.72rem;">
+                                        <?= htmlspecialchars($v['badge']) ?>
+                                    </span>
+                                </div>
+                                <h6 class="fw-semibold text-dark mb-1"><?= htmlspecialchars($v['title']) ?></h6>
+                                <p class="card-text text-muted mb-0 small flex-grow-1"><?= htmlspecialchars($v['desc']) ?></p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 

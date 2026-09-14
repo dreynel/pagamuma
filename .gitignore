@@ -16,3 +16,12 @@ Thumbs.db
 
 # VS Code (optional)
 .vscode/
+
+# Media & Videos
+video2/
+videos/
+*.mp4
+*.webm
+*.mov
+*.avi
+*.mkv

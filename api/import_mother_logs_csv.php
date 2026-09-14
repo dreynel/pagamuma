@@ -58,6 +58,7 @@ function pickIndex($index, array $candidates) {
     return null;
 }
 
+$idxId = pickIndex($index, ['id', 'log_id', 'log id']);
 $idxDate = pickIndex($index, ['date', 'log_date']);
 $idxWeight = pickIndex($index, ['weight', 'weight_kg', 'weight (kg)']);
 $idxBp = pickIndex($index, ['bp', 'blood pressure', 'blood_pressure']);
@@ -106,24 +107,46 @@ while (($row = fgetcsv($handle)) !== false) {
     $symptoms = ($symptomsRaw === '') ? null : $symptomsRaw;
 
     // Try to find matching log row.
-    // health_logs fields: id, user_id, log_date, weight_kg, blood_pressure, symptoms, prescription, admin_status, created_at
-    // We attempt match using log_date + weight + blood_pressure + symptoms when all present.
+    // 1. If Log ID / ID column is present and valid, match directly by ID
+    $match = null;
+    if ($idxId !== null && isset($row[$idxId])) {
+        $idRaw = trim((string)$row[$idxId]);
+        if ($idRaw !== '' && is_numeric($idRaw)) {
+            $stmtId = $pdo->prepare("SELECT id FROM health_logs WHERE user_id = ? AND id = ? LIMIT 1");
+            $stmtId->execute([$mother_id, intval($idRaw)]);
+            $match = $stmtId->fetch(PDO::FETCH_ASSOC);
+        }
+    }
 
-    $sqlBase = "SELECT id FROM health_logs WHERE user_id = ? AND log_date = ?";
-    $params = [$mother_id, normalize_date_for_db($dateRaw)];
+    // 2. Fallback: match using log_date + weight + blood_pressure + symptoms
+    if (!$match || empty($match['id'])) {
+        $sqlBase = "SELECT id FROM health_logs WHERE user_id = ? AND log_date = ?";
+        $params = [$mother_id, normalize_date_for_db($dateRaw)];
 
-    // If any of these are missing, we loosen matching to avoid skipping too much.
-    $hasWeight = $weight !== null;
-    $hasBp = $bp !== null;
-    $hasSymptoms = $symptoms !== null;
+        $hasWeight = $weight !== null;
+        $hasBp = $bp !== null;
+        $hasSymptoms = $symptoms !== null;
 
-    if ($hasWeight) { $sqlBase .= " AND weight_kg = ?"; $params[] = $weight; }
-    if ($hasBp) { $sqlBase .= " AND blood_pressure = ?"; $params[] = $bp; }
-    if ($hasSymptoms) { $sqlBase .= " AND symptoms = ?"; $params[] = $symptoms; }
+        if ($hasWeight) { $sqlBase .= " AND weight_kg = ?"; $params[] = $weight; }
+        if ($hasBp) { $sqlBase .= " AND blood_pressure = ?"; $params[] = $bp; }
+        if ($hasSymptoms) { $sqlBase .= " AND symptoms = ?"; $params[] = $symptoms; }
 
-    $stmt = $pdo->prepare($sqlBase . " LIMIT 1");
-    $stmt->execute($params);
-    $match = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $pdo->prepare($sqlBase . " LIMIT 1");
+        $stmt->execute($params);
+        $match = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // 3. Fallback: if exact symptoms didn't match (e.g. due to whitespace/newlines), try without symptoms
+        if ((!$match || empty($match['id'])) && $hasSymptoms && ($hasWeight || $hasBp)) {
+            $sqlLooser = "SELECT id FROM health_logs WHERE user_id = ? AND log_date = ?";
+            $paramsLooser = [$mother_id, normalize_date_for_db($dateRaw)];
+            if ($hasWeight) { $sqlLooser .= " AND weight_kg = ?"; $paramsLooser[] = $weight; }
+            if ($hasBp) { $sqlLooser .= " AND blood_pressure = ?"; $paramsLooser[] = $bp; }
+
+            $stmtLooser = $pdo->prepare($sqlLooser . " LIMIT 1");
+            $stmtLooser->execute($paramsLooser);
+            $match = $stmtLooser->fetch(PDO::FETCH_ASSOC);
+        }
+    }
 
     if (!$match || empty($match['id'])) {
         $skipped++;

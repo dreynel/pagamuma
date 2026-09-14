@@ -64,34 +64,35 @@ function renderStars($rating) {
 
 <div class="row mb-4">
     <div class="col-12">
-        <h2 class="fw-bold text-dark mb-1">Mothers Directory</h2>
-        <p class="text-muted">Overview of registered pregnant mothers and pending prescriptions needing your attention.</p>
+        <h2 class="fw-bold text-dark mb-1" data-i18n="mothers_directory_title">Mothers Directory</h2>
+        <p class="text-muted" data-i18n="mothers_directory_desc">Overview of registered pregnant mothers and pending prescriptions needing your attention.</p>
 
-        <div class="row g-2 mt-3">
-            <div class="col-md-6">
-                <form method="GET" class="d-flex gap-2">
-                    <input type="hidden" name="page" value="dashboard" />
+        <form method="GET" class="mt-3">
+            <input type="hidden" name="page" value="dashboard" />
+            <div class="row g-2">
+                <div class="col-md-6">
                     <input
                         type="text"
                         name="search"
                         class="form-control"
                         placeholder="Search by name, email, or address..."
+                        data-i18n-placeholder="search_placeholder"
                         value="<?= htmlspecialchars($search) ?>"
                     />
+                </div>
+                <div class="col-md-3">
+                    <select name="sort" class="form-select" onchange="this.form.submit()">
+                        <option value="date_desc" data-i18n="opt_sort_newest" <?= $sort === 'date_desc' ? 'selected' : '' ?>>Newest</option>
+                        <option value="date_asc" data-i18n="opt_sort_oldest" <?= $sort === 'date_asc' ? 'selected' : '' ?>>Oldest</option>
+                        <option value="due_date_asc" data-i18n="opt_sort_due_earliest" <?= $sort === 'due_date_asc' ? 'selected' : '' ?>>Due date (earliest)</option>
+                        <option value="due_date_desc" data-i18n="opt_sort_due_latest" <?= $sort === 'due_date_desc' ? 'selected' : '' ?>>Due date (latest)</option>
+                    </select>
+                </div>
+                <div class="col-md-3 text-md-end">
+                    <button type="submit" class="btn btn-outline-secondary rounded-pill px-4 w-100 w-md-auto" data-i18n="btn_search">Search</button>
+                </div>
             </div>
-            <div class="col-md-3">
-                <select name="sort" class="form-select" onchange="this.form.submit()">
-                    <option value="date_desc" <?= $sort === 'date_desc' ? 'selected' : '' ?>>Newest</option>
-                    <option value="date_asc" <?= $sort === 'date_asc' ? 'selected' : '' ?>>Oldest</option>
-                    <option value="due_date_asc" <?= $sort === 'due_date_asc' ? 'selected' : '' ?>>Due date (earliest)</option>
-                    <option value="due_date_desc" <?= $sort === 'due_date_desc' ? 'selected' : '' ?>>Due date (latest)</option>
-                </select>
-                </form>
-            </div>
-            <div class="col-md-3 text-md-end">
-                <button type="submit" class="btn btn-outline-secondary rounded-pill px-4">Search</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -100,12 +101,12 @@ function renderStars($rating) {
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th class="ps-4">Mother</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Expected Due Date</th>
-                    <th>Status</th>
-                    <th class="text-end pe-4">Action</th>
+                    <th class="ps-4" data-i18n="th_mother">Mother</th>
+                    <th data-i18n="email_label">Email</th>
+                    <th data-i18n="label_address">Address</th>
+                    <th data-i18n="label_edd">Expected Due Date</th>
+                    <th data-i18n="th_status">Status</th>
+                    <th class="text-end pe-4" data-i18n="th_action">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -156,12 +157,14 @@ function renderStars($rating) {
                                     <a
                                         href="index.php?page=mother_logs&id=<?= (int)$m['id'] ?>"
                                         class="btn btn-outline-danger btn-sm rounded-pill fw-medium px-3"
+                                        data-i18n="btn_view_logs"
                                     >
                                         View Logs
                                     </a>
                                     <a
                                         href="index.php?page=mother_logs&id=<?= (int)$m['id'] ?>&download=1"
                                         class="btn btn-outline-secondary btn-sm rounded-pill fw-medium px-3"
+                                        data-i18n="btn_download"
                                     >
                                         Download
                                     </a>
@@ -181,7 +184,7 @@ function renderStars($rating) {
             <h4 class="fw-bold text-dark mb-1"><i class="fa-solid fa-star text-warning me-2"></i> Recent User Feedback</h4>
             <p class="text-muted small">Latest 5 reviews from the platform users.</p>
         </div>
-        <a href="index.php?page=reviews" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-medium shadow-sm">View All Feedback</a>
+        <a href="index.php?page=reviews" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-medium shadow-sm" data-i18n="btn_view_all_feedback">View All Feedback</a>
     </div>
 </div>
 
@@ -190,11 +193,11 @@ function renderStars($rating) {
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th class="ps-4">User</th>
-                    <th>Rating</th>
-                    <th style="width: 45%">Feedback</th>
-                    <th>Date</th>
-                    <th class="pe-4">Status</th>
+                    <th class="ps-4" data-i18n="th_user">User</th>
+                    <th data-i18n="th_rating">Rating</th>
+                    <th style="width: 45%" data-i18n="th_feedback">Feedback</th>
+                    <th data-i18n="th_date">Date</th>
+                    <th class="pe-4" data-i18n="th_status">Status</th>
                 </tr>
             </thead>
             <tbody>

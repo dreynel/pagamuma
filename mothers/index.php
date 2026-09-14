@@ -55,7 +55,7 @@ $profile_pic_src = !empty($user_pic) ? '../uploads/profile_pictures/' . htmlspec
 
             <div class="list-group list-group-flush px-3">
                 <a href="index.php?page=dashboard" class="list-group-item list-group-item-action <?= $page == 'dashboard' ? 'active' : '' ?> rounded mb-1">
-                    <i class="fa-solid fa-house me-2"></i> Dashboard
+                    <i class="fa-solid fa-house me-2"></i> <span data-i18n="menu_dashboard">Dashboard</span>
                 </a>
                 
                 <div class="text-muted small fw-bold text-uppercase px-3 mt-3 mb-2" data-i18n="menu_learning">Learning</div>

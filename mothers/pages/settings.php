@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../config/db.php';
 
 // Fetch user profile stats
 $user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT u.address, p.* FROM users u LEFT JOIN pregnancy_profiles p ON p.user_id = u.id WHERE u.id = ? AND u.role = 'mother'");
+$stmt = $pdo->prepare("SELECT u.email, u.address, p.* FROM users u LEFT JOIN pregnancy_profiles p ON p.user_id = u.id WHERE u.id = ? AND u.role = 'mother'");
 $stmt->execute([$user_id]);
 $profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -26,7 +26,7 @@ $avatar_url = !empty($profile_picture) ? '../uploads/profile_pictures/' . htmlsp
 <div class="row mb-4">
     <div class="col-12">
         <h2 class="fw-bold text-dark mb-1" data-i18n="menu_settings">Account Settings</h2>
-        <p class="text-muted">Manage your profile and pregnancy details.</p>
+        <p class="text-muted" data-i18n="settings_subtitle">Manage your profile and pregnancy details.</p>
     </div>
 </div>
 
@@ -34,68 +34,68 @@ $avatar_url = !empty($profile_picture) ? '../uploads/profile_pictures/' . htmlsp
     <div class="col-lg-8">
         <!-- Personal Information -->
         <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-            <h5 class="fw-bold text-dark mb-4">Personal Information</h5>
+            <h5 class="fw-bold text-dark mb-4" data-i18n="personal_info_title">Personal Information</h5>
             <form id="personalInfoForm">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label text-muted small fw-medium">First Name</label>
+                        <label class="form-label text-muted small fw-medium" data-i18n="label_first_name">First Name</label>
                         <input type="text" class="form-control bg-light border-0" value="<?= htmlspecialchars($_SESSION['first_name'] ?? '') ?>" disabled>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label text-muted small fw-medium">Last Name</label>
+                        <label class="form-label text-muted small fw-medium" data-i18n="label_last_name">Last Name</label>
                         <input type="text" class="form-control bg-light border-0" value="<?= htmlspecialchars($_SESSION['last_name'] ?? '') ?>" disabled>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label text-muted small fw-medium">Email Address</label>
-                    <input type="email" class="form-control bg-light border-0" value="<?= htmlspecialchars($_SESSION['email'] ?? 'jane@example.com') ?>" disabled>
-                    <div class="form-text small">Name and Email cannot be changed directly at the moment.</div>
+                    <label class="form-label text-muted small fw-medium" data-i18n="email_label">Email Address</label>
+                    <input type="email" class="form-control bg-light border-0" value="<?= htmlspecialchars($profile['email'] ?? $_SESSION['email'] ?? '') ?>" disabled>
+                    <div class="form-text small" data-i18n="info_cannot_change">Name and Email cannot be changed directly at the moment.</div>
                 </div>
             </form>
         </div>
 
         <!-- Address (Patient Identification) -->
         <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-            <h5 class="fw-bold text-dark mb-4">Patient Address</h5>
+            <h5 class="fw-bold text-dark mb-4" data-i18n="patient_address_title">Patient Address</h5>
             <form id="addressForm">
                 <div class="mb-3">
-                    <label for="address" class="form-label text-muted small fw-medium">Address</label>
-                    <textarea name="address" id="address" class="form-control bg-light border-0" rows="3" placeholder="Enter address for easier identification"><?= htmlspecialchars($profile['address'] ?? '') ?></textarea>
+                    <label for="address" class="form-label text-muted small fw-medium" data-i18n="label_address">Address</label>
+                    <textarea name="address" id="address" class="form-control bg-light border-0" rows="3" placeholder="Enter address for easier identification" data-i18n-placeholder="address_placeholder"><?= htmlspecialchars($profile['address'] ?? '') ?></textarea>
                 </div>
                 <div id="addressAlert" class="alert d-none" role="alert"></div>
-                <button type="button" id="saveAddressBtn" class="btn btn-primary rounded-pill px-4 py-2 fw-medium">Save Address</button>
+                <button type="button" id="saveAddressBtn" class="btn btn-primary rounded-pill px-4 py-2 fw-medium" data-i18n="save_address_btn">Save Address</button>
             </form>
         </div>
 
         <!-- Pregnancy Profile Setup -->
         <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-            <h5 class="fw-bold text-dark mb-4">Pregnancy Profile Settings</h5>
+            <h5 class="fw-bold text-dark mb-4" data-i18n="pregnancy_profile_title">Pregnancy Profile Settings</h5>
             <form id="pregnancyProfileForm" enctype="multipart/form-data">
                 
                 <!-- Profile Picture -->
                 <div class="mb-4 d-flex align-items-center gap-3">
                     <img src="<?= $avatar_url ?>" alt="Profile" class="rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
                     <div>
-                        <label class="form-label text-muted small fw-medium">Profile Picture</label>
+                        <label class="form-label text-muted small fw-medium" data-i18n="label_profile_picture">Profile Picture</label>
                         <input type="file" name="profile_picture" class="form-control bg-light border-0" accept="image/*">
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label text-muted small fw-medium">Expected Due Date (EDD)</label>
+                        <label class="form-label text-muted small fw-medium" data-i18n="label_edd">Expected Due Date (EDD)</label>
                         <input type="date" name="expected_due_date" id="expected_due_date" class="form-control bg-light border-0" value="<?= htmlspecialchars($expected_due_date) ?>" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label text-muted small fw-medium">Pregnancy Start Date (LMP)</label>
+                        <label class="form-label text-muted small fw-medium" data-i18n="label_lmp">Pregnancy Start Date (LMP)</label>
                         <input type="date" name="pregnancy_start_date" id="pregnancy_start_date" class="form-control bg-light border-0" value="<?= htmlspecialchars($pregnancy_start_date) ?>">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label text-muted small fw-medium">Blood Type</label>
+                        <label class="form-label text-muted small fw-medium" data-i18n="label_blood_type">Blood Type</label>
                         <select name="blood_type" id="blood_type" class="form-select bg-light border-0">
-                            <option value="">Select Blood Type</option>
+                            <option value="" data-i18n="select_blood_type">Select Blood Type</option>
                             <option value="A+" <?= $blood_type == 'A+' ? 'selected' : '' ?>>A+</option>
                             <option value="A-" <?= $blood_type == 'A-' ? 'selected' : '' ?>>A-</option>
                             <option value="B+" <?= $blood_type == 'B+' ? 'selected' : '' ?>>B+</option>
@@ -108,11 +108,11 @@ $avatar_url = !empty($profile_picture) ? '../uploads/profile_pictures/' . htmlsp
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label class="form-label text-muted small fw-medium">Medical History / Allergies</label>
-                    <textarea name="medical_history" id="medical_history" class="form-control bg-light border-0" rows="3"><?= htmlspecialchars($medical_history) ?></textarea>
+                    <label class="form-label text-muted small fw-medium" data-i18n="label_medical_history">Medical History / Allergies</label>
+                    <textarea name="medical_history" id="medical_history" class="form-control bg-light border-0" rows="3" placeholder="List any known allergies, chronic conditions, or previous pregnancy complications..." data-i18n-placeholder="med_history_placeholder"><?= htmlspecialchars($medical_history) ?></textarea>
                 </div>
                 <div id="profileAlert" class="alert d-none" role="alert"></div>
-                <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-medium">Save Pregnancy Profile</button>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-medium" data-i18n="save_profile_btn">Save Pregnancy Profile</button>
             </form>
         </div>
     </div>

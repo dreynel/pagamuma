@@ -1,6 +1,7 @@
 <!-- c:\xampp\htdocs\pagamuma\mothers\pages\health_modules.php -->
 <?php
 require_once __DIR__ . '/../../config/db.php';
+$hiligaynonVideos = require __DIR__ . '/../../config/hiligaynon_videos.php';
 $stmt = $pdo->prepare("SELECT * FROM educational_modules WHERE category = 'health'");
 $stmt->execute();
 $articles = $stmt->fetchAll();
@@ -57,7 +58,55 @@ $articles = $stmt->fetchAll();
     </div>
 </div>
 
-<div class="row g-4 mb-4 justify-content-center">
+<!-- Featured Hiligaynon Video Modules -->
+<div class="mb-5">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+        <div>
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 bg-danger-subtle text-danger rounded-pill small fw-semibold mb-2">
+                <i class="fa-solid fa-volume-high"></i> <span data-i18n="video_hil">Hiligaynon Video</span>
+            </div>
+            <h5 class="fw-bold text-dark mb-0" data-i18n="hil_videos_title">Hiligaynon Maternal Health Videos</h5>
+            <p class="text-muted small mb-0" data-i18n="hil_videos_subtitle">Exclusive localized video guides in Hiligaynon for expecting mothers.</p>
+        </div>
+        <span class="badge bg-danger rounded-pill px-3 py-2 fw-medium shadow-sm"><i class="fa-solid fa-video me-1"></i> 8 Hiligaynon Modules</span>
+    </div>
+
+    <div class="row g-4">
+        <?php foreach ($hiligaynonVideos as $v): ?>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white">
+                    <div class="ratio ratio-16x9 bg-dark">
+                        <video controls preload="metadata" playsinline class="w-100 h-100" style="object-fit: contain;">
+                            <source src="../video2/<?= htmlspecialchars($v['file']) ?>" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="card-body p-3 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-danger-subtle text-danger fw-semibold" style="font-size: 0.7rem;">
+                                <i class="fa-solid fa-microphone-lines me-1"></i> Hiligaynon
+                            </span>
+                            <span class="badge bg-light text-secondary border fw-medium" style="font-size: 0.7rem;">
+                                <?= htmlspecialchars($v['badge']) ?>
+                            </span>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1 small"><?= htmlspecialchars($v['title']) ?></h6>
+                        <p class="text-muted small mb-0 flex-grow-1" style="font-size: 0.8rem;"><?= htmlspecialchars($v['desc']) ?></p>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<!-- Supplemental Health Videos -->
+<div class="mb-4">
+    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 small fw-semibold"><i class="fa-brands fa-youtube"></i> Supplemental</span>
+        <h5 class="fw-bold text-dark mb-0" data-i18n="youtube_videos_title">Supplemental Health Videos</h5>
+    </div>
+
+    <div class="row g-4 mb-4 justify-content-center">
     <!-- Video 1 -->
     <div class="col-12 col-md-6 col-lg-3">
         <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden bg-white">
@@ -149,4 +198,5 @@ $articles = $stmt->fetchAll();
             </div>
         </div>
     </div>
+</div>
 </div>

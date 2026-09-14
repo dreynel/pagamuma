@@ -50,16 +50,16 @@ $page = $_GET['page'] ?? 'dashboard';
 
             <div class="list-group list-group-flush px-3">
                 <a href="index.php?page=dashboard" class="list-group-item list-group-item-action <?= $page == 'dashboard' ? 'active bg-danger text-white border-0' : '' ?> rounded mb-1">
-                    <i class="fa-solid fa-users me-2"></i> Mother Directory
+                    <i class="fa-solid fa-users me-2"></i> <span data-i18n="menu_mother_directory">Mother Directory</span>
                 </a>
                 <a href="index.php?page=reviews" class="list-group-item list-group-item-action <?= $page == 'reviews' ? 'active bg-danger text-white border-0' : '' ?> rounded mb-1">
-                    <i class="fa-solid fa-star me-2"></i> Manage Reviews
+                    <i class="fa-solid fa-star me-2"></i> <span data-i18n="menu_manage_reviews">Manage Reviews</span>
                 </a>
                 
-                <div class="text-muted small fw-bold text-uppercase px-3 mt-4 pt-2 border-top mb-2">Account</div>
+                <div class="text-muted small fw-bold text-uppercase px-3 mt-4 pt-2 border-top mb-2" data-i18n="menu_account">Account</div>
                 
                 <a href="../api/logout_action.php" class="list-group-item list-group-item-action rounded text-danger mt-1">
-                    <i class="fa-solid fa-right-from-bracket me-2"></i> Log Out
+                    <i class="fa-solid fa-right-from-bracket me-2"></i> <span data-i18n="menu_logout">Log Out</span>
                 </a>
             </div>
         </div>
@@ -71,7 +71,14 @@ $page = $_GET['page'] ?? 'dashboard';
                     <button class="btn btn-light" id="menu-toggle">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <h5 class="mb-0 ms-3 fw-semibold text-dark">Management Console</h5>
+                    <h5 class="mb-0 ms-3 fw-semibold text-dark" data-i18n="admin_console_title">Management Console</h5>
+                </div>
+                <div class="ms-auto d-flex align-items-center">
+                    <select class="form-select border-0 shadow-sm text-secondary fw-medium" id="languageSelector" style="width: auto;">
+                        <option value="en">English</option>
+                        <option value="hil">Hiligaynon</option>
+                        <option value="tl">Tagalog</option>
+                    </select>
                 </div>
             </nav>
 
@@ -95,6 +102,7 @@ $page = $_GET['page'] ?? 'dashboard';
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/translations.js"></script>
     <script>
         // Sidebar Toggle Script
         const wrapper = document.getElementById("wrapper");

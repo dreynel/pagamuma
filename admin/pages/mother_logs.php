@@ -20,6 +20,7 @@ $stmt = $pdo->prepare("
     SELECT u.first_name, u.last_name, u.profile_picture, u.email, u.address, p.expected_due_date, p.medical_history
     FROM users u
     LEFT JOIN pregnancy_profiles p ON p.user_id = u.id
+    WHERE u.id = ?
 ");
 $stmt->execute([$mother_id]);
 $mother = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -68,7 +69,7 @@ if ($download) {
 
 <div class="mb-4">
     <a href="index.php?page=dashboard" class="btn btn-sm btn-outline-secondary rounded-pill shadow-sm px-3 mb-3">
-        <i class="fa-solid fa-arrow-left me-2"></i> Back to Directory
+        <i class="fa-solid fa-arrow-left me-2"></i> <span data-i18n="btn_back_directory">Back to Directory</span>
     </a>
         <div class="d-flex align-items-center gap-3 bg-white p-4 rounded-4 shadow-sm border-0">
         <img src="<?= !empty($mother['profile_picture']) ? '../uploads/profile_pictures/'.htmlspecialchars($mother['profile_picture']) : 'https://ui-avatars.com/api/?name='.urlencode($mother['first_name'].' '.$mother['last_name']) ?>" alt="Avatar" class="rounded-circle shadow-sm border" style="width: 80px; height: 80px; object-fit: cover;">
@@ -84,18 +85,18 @@ if ($download) {
 
 <?php if (!empty($mother['medical_history'])): ?>
 <div class="alert alert-warning border-warning border-opacity-50 bg-warning-subtle text-dark rounded-4 shadow-sm mb-4">
-    <h6 class="fw-bold mb-2"><i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> Medical History / Allergies</h6>
+    <h6 class="fw-bold mb-2"><i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> <span data-i18n="label_medical_history">Medical History / Allergies</span></h6>
     <p class="mb-0 small"><?= nl2br(htmlspecialchars($mother['medical_history'])) ?></p>
 </div>
 <?php endif; ?>
 
 <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
     <div class="d-flex justify-content-between align-items-center mb-3 gap-3 flex-wrap">
-        <h5 class="fw-bold text-dark mb-0">Health & Vitals Log</h5>
+        <h5 class="fw-bold text-dark mb-0" data-i18n="health_vitals_log_title">Health & Vitals Log</h5>
 
         <div class="d-flex align-items-center gap-2">
             <a href="index.php?page=mother_logs&id=<?= (int)$mother_id ?>&download=1" class="btn btn-sm btn-outline-secondary rounded-pill shadow-sm px-3">
-                <i class="fa-solid fa-file-csv me-2"></i> Download CSV
+                <i class="fa-solid fa-file-csv me-2"></i> <span data-i18n="btn_download_csv">Download CSV</span>
             </a>
         </div>
     </div>
@@ -111,7 +112,7 @@ if ($download) {
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <input type="file" id="importCsvFile" accept=".csv,text/csv" class="form-control form-control-sm" style="max-width: 360px;">
                 <button type="button" id="btnImportCsv" class="btn btn-sm btn-danger rounded-pill px-4 fw-medium shadow-sm">
-                    <i class="fa-solid fa-pen-to-square me-2"></i> Import CSV
+                    <i class="fa-solid fa-pen-to-square me-2"></i> <span data-i18n="btn_import_csv">Import CSV</span>
                 </button>
                 <div class="small" id="importCsvStatus"></div>
             </div>
@@ -122,18 +123,18 @@ if ($download) {
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr>
-                    <th class="text-muted small fw-medium">Date</th>
-                    <th class="text-muted small fw-medium">Weight</th>
-                    <th class="text-muted small fw-medium">BP</th>
-                    <th class="text-muted small fw-medium">Symptoms / Notes</th>
-                    <th class="text-muted small fw-medium">Prescription</th>
-                    <th class="text-muted small fw-medium text-end">Action</th>
+                    <th class="text-muted small fw-medium" data-i18n="th_date">Date</th>
+                    <th class="text-muted small fw-medium" data-i18n="th_weight">Weight</th>
+                    <th class="text-muted small fw-medium" data-i18n="th_bp_short">BP</th>
+                    <th class="text-muted small fw-medium" data-i18n="th_symptoms">Symptoms / Notes</th>
+                    <th class="text-muted small fw-medium" data-i18n="th_prescription">Prescription</th>
+                    <th class="text-muted small fw-medium text-end" data-i18n="th_action">Action</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if(empty($logs)): ?>
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">No health logs submitted by this mother yet.</td>
+                        <td colspan="6" class="text-center py-5 text-muted" data-i18n="no_vitals_logged">No health logs submitted by this mother yet.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach($logs as $log): ?>
@@ -154,7 +155,7 @@ if ($download) {
                                         <?= nl2br(htmlspecialchars($log['prescription'])) ?>
                                     </div>
                                 <?php else: ?>
-                                    <span class="text-danger bg-danger-subtle px-2 py-1 rounded small"><i class="fa-solid fa-circle-exclamation me-1"></i> Needs Review</span>
+                                    <span class="text-danger bg-danger-subtle px-2 py-1 rounded small"><i class="fa-solid fa-circle-exclamation me-1"></i> <span data-i18n="needs_review_badge">Needs Review</span></span>
                                 <?php endif; ?>
                             </td>
                             <td class="text-end" style="white-space: nowrap;">
@@ -180,13 +181,13 @@ if ($download) {
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 rounded-4 shadow">
       <div class="modal-header border-bottom-0 bg-danger text-white rounded-top-4">
-        <h5 class="modal-title fw-bold" id="prescriptionModalLabel"><i class="fa-solid fa-notes-medical me-2"></i> Manage Prescription</h5>
+        <h5 class="modal-title fw-bold" id="prescriptionModalLabel"><i class="fa-solid fa-notes-medical me-2"></i> <span data-i18n="modal_manage_prescription">Manage Prescription</span></h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body p-4">
         
         <div class="alert alert-secondary bg-light border-0 mb-4 rounded-3">
-            <h6 class="fw-bold text-dark mb-1">Reported Symptoms:</h6>
+            <h6 class="fw-bold text-dark mb-1" data-i18n="reported_symptoms_title">Reported Symptoms:</h6>
             <p class="mb-0 small text-muted" id="modalSymptomsSummary"></p>
         </div>
 
@@ -194,23 +195,23 @@ if ($download) {
             <input type="hidden" id="modalLogId" name="log_id">
             
             <div class="mb-3">
-                <label for="adminStatus" class="form-label fw-bold text-dark">Status Definition</label>
+                <label for="adminStatus" class="form-label fw-bold text-dark" data-i18n="label_status_definition">Status Definition</label>
                 <select name="admin_status" id="adminStatus" class="form-select bg-light border-0">
-                    <option value="Normal">Normal Handling / Advice</option>
-                    <option value="Critical">Critical Intervention Needed</option>
-                    <option value="No Worries">Status Normal / No Worries</option>
+                    <option value="Normal" data-i18n="opt_normal">Normal Handling / Advice</option>
+                    <option value="Critical" data-i18n="opt_critical">Critical Intervention Needed</option>
+                    <option value="No Worries" data-i18n="opt_no_worries">Status Normal / No Worries</option>
                 </select>
             </div>
 
             <div class="mb-3">
-                <label for="modalPrescriptionText" class="form-label fw-bold text-dark">Doctor's Prescription / Advice</label>
-                <textarea class="form-control bg-light border-0" id="modalPrescriptionText" name="prescription" rows="5" required placeholder="Type the prescription, advised rest, or vitamins here..."></textarea>
+                <label for="modalPrescriptionText" class="form-label fw-bold text-dark" data-i18n="label_doctor_prescription">Doctor's Prescription / Advice</label>
+                <textarea class="form-control bg-light border-0" id="modalPrescriptionText" name="prescription" rows="5" required placeholder="Type the prescription, advised rest, or vitamins here..." data-i18n-placeholder="prescription_placeholder"></textarea>
             </div>
             <div id="modalAlert" class="alert d-none py-2" role="alert"></div>
             
             <div class="d-flex gap-2">
-                <button type="button" id="btnNoWorries" class="btn btn-outline-secondary w-50 rounded-pill py-2 fw-medium shadow-sm"><i class="fa-solid fa-thumbs-up me-2"></i>No Worries</button>
-                <button type="submit" class="btn btn-danger w-50 rounded-pill py-2 fw-medium shadow-sm">Save Action</button>
+                <button type="button" id="btnNoWorries" class="btn btn-outline-secondary w-50 rounded-pill py-2 fw-medium shadow-sm"><i class="fa-solid fa-thumbs-up me-2"></i><span data-i18n="btn_no_worries">No Worries</span></button>
+                <button type="submit" class="btn btn-danger w-50 rounded-pill py-2 fw-medium shadow-sm" data-i18n="btn_save_action">Save Action</button>
             </div>
         </form>
       </div>

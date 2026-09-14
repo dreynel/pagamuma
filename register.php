@@ -59,8 +59,8 @@ unset($_SESSION['error'], $_SESSION['success']);
                         </div>
 
                         <div class="mb-4">
-                            <h3 class="fw-bold text-dark mb-2">Create an Account</h3>
-                            <p class="text-muted">Sign up to access modules and track your health.</p>
+                            <h3 class="fw-bold text-dark mb-2" data-i18n="register_title">Create an Account</h3>
+                            <p class="text-muted" data-i18n="register_subtitle">Sign up to access modules and track your health.</p>
                         </div>
 
                         <?php if (!empty($error)): ?>
@@ -83,11 +83,11 @@ unset($_SESSION['error'], $_SESSION['success']);
                         <form action="api/register_action.php" method="POST">
                             <div class="row">
                                 <div class="col-md-6 mb-3 input-group-custom">
-                                    <label for="first_name" class="form-label fw-medium">First Name</label>
+                                    <label for="first_name" class="form-label fw-medium" data-i18n="label_first_name">First Name</label>
                                     <input type="text" name="first_name" class="form-control bg-light" id="first_name" required>
                                 </div>
                                 <div class="col-md-6 mb-3 input-group-custom">
-                                    <label for="last_name" class="form-label fw-medium">Last Name</label>
+                                    <label for="last_name" class="form-label fw-medium" data-i18n="label_last_name">Last Name</label>
                                     <input type="text" name="last_name" class="form-control bg-light" id="last_name" required>
                                 </div>
                             </div>
@@ -117,11 +117,11 @@ unset($_SESSION['error'], $_SESSION['success']);
                             </div>
 
                             <div class="mb-4 input-group-custom">
-                                <label for="address" class="form-label fw-medium">Address (optional)</label>
-                                <textarea name="address" id="address" class="form-control bg-light" rows="3" placeholder="Enter address for easier identification"></textarea>
+                                <label for="address" class="form-label fw-medium" data-i18n="label_address">Address (optional)</label>
+                                <textarea name="address" id="address" class="form-control bg-light" rows="3" placeholder="Enter address for easier identification" data-i18n-placeholder="address_placeholder"></textarea>
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold mb-4 btn-login">
+                            <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold mb-4 btn-login" data-i18n="register_btn">
                                 Create Account
                             </button>
 
@@ -139,7 +139,7 @@ unset($_SESSION['error'], $_SESSION['success']);
                             </div>
 
                             <div class="text-center pb-4">
-                                <p class="text-muted mb-0">Already have an account? <a href="login.php" class="text-primary fw-bold text-decoration-none">Sign In</a></p>
+                                <p class="text-muted mb-0"><span data-i18n="already_have_account">Already have an account?</span> <a href="login.php" class="text-primary fw-bold text-decoration-none" data-i18n="login_here">Sign In</a></p>
                             </div>
                         </form>
                     </div>

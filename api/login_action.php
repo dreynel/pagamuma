@@ -13,13 +13,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    $stmt = $pdo->prepare("SELECT id, password_hash, first_name, last_name, role, profile_picture FROM users WHERE email = ? LIMIT 1");
+    $stmt = $pdo->prepare("SELECT id, email, password_hash, first_name, last_name, role, profile_picture FROM users WHERE email = ? LIMIT 1");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
         // Successful login
         $_SESSION['user_id'] = $user['id'];
+        $_SESSION['email'] = $user['email'];
         $_SESSION['first_name'] = $user['first_name'];
         $_SESSION['last_name'] = $user['last_name'];
         $_SESSION['role'] = $user['role'];

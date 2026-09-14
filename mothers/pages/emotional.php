@@ -8,13 +8,13 @@ $articles = $stmt->fetchAll();
 <div class="row mb-4">
     <div class="col-12">
         <h2 class="fw-bold text-dark mb-1" data-i18n="menu_emotional">Emotional Support</h2>
-        <p class="text-muted">Mental health resources to navigate the emotional changes of pregnancy.</p>
+        <p class="text-muted" data-i18n="emotional_subtitle">Mental health resources to navigate the emotional changes of pregnancy.</p>
     </div>
 </div>
 
 <div class="row g-4">
     <div class="col-md-6 border-end-md">
-        <h4 class="fw-bold text-dark mb-4">Mindfulness & Mental Health</h4>
+        <h4 class="fw-bold text-dark mb-4" data-i18n="mindfulness_title">Mindfulness & Mental Health</h4>
         <?php if(empty($articles)): ?>
             <p class="text-muted py-3">No articles available.</p>
         <?php else: ?>
@@ -43,12 +43,12 @@ $articles = $stmt->fetchAll();
     </div>
 
     <div class="col-md-6 ps-md-4">
-        <h4 class="fw-bold text-dark mb-4">Community Support</h4>
+        <h4 class="fw-bold text-dark mb-4" data-i18n="community_title">Community Support</h4>
         <div class="card border-0 shadow-sm bg-primary text-white rounded-4 p-4 text-center">
             <i class="fa-solid fa-users fs-1 mb-3"></i>
-            <h5 class="fw-bold mb-2">You are not alone.</h5>
-            <p class="mb-4">Connect with other mothers in the PAG-AMUMA community to share experiences and receive support.</p>
-            <a href="https://www.facebook.com/groups/767354806309428/" target="_blank" class="btn btn-light text-primary fw-bold rounded-pill mx-auto mb-2 text-decoration-none"><i class="fa-brands fa-facebook me-2"></i> Join FB Group</a>
+            <h5 class="fw-bold mb-2" data-i18n="community_tagline">You are not alone.</h5>
+            <p class="mb-4" data-i18n="community_desc">Connect with other mothers in the PAG-AMUMA community to share experiences and receive support.</p>
+            <a href="https://www.facebook.com/groups/767354806309428/" target="_blank" class="btn btn-light text-primary fw-bold rounded-pill mx-auto mb-2 text-decoration-none"><i class="fa-brands fa-facebook me-2"></i> <span data-i18n="join_fb_btn">Join FB Group</span></a>
         </div>
     </div>
 </div>
