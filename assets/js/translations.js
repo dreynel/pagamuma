@@ -231,7 +231,6 @@ const translations = {
         community_title: "Community Support",
         community_tagline: "You are not alone.",
         community_desc: "Connect with other mothers in the PAG-AMUMA community to share experiences and receive support.",
-        join_fb_btn: "Join FB Group"
         join_fb_btn: "Join FB Group",
 
         hero_badge: "✨ ISO 25010 Evaluated • 100% Free & Open",
@@ -484,7 +483,6 @@ const translations = {
         community_title: "Suporta sang Komunidad",
         community_tagline: "Wala ka nagaisahanon.",
         community_desc: "Makig-angot sa iban nga mga iloy sa PAG-AMUMA para magpaambit sang eksperyensya kag magbaton sang suporta.",
-        join_fb_btn: "Mag-upod sa FB Group"
         join_fb_btn: "Mag-upod sa FB Group",
 
         hero_badge: "✨ Gin-ebalwar sa ISO 25010 • 100% Libre kag Bukas",
@@ -737,7 +735,6 @@ const translations = {
         community_title: "Suporta ng Komunidad",
         community_tagline: "Hindi ka nag-iisa.",
         community_desc: "Kumonekta sa ibang mga ina sa komunidad ng PAG-AMUMA upang magbahagi ng karanasan at tumanggap ng suporta.",
-        join_fb_btn: "Sumali sa FB Group"
         join_fb_btn: "Sumali sa FB Group",
 
         hero_badge: "✨ Sinuri sa ISO 25010 • 100% Libre at Bukas",
@@ -757,44 +754,69 @@ const translations = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    const languageSelector = document.getElementById('languageSelector');
+function setLanguage(lang) {
+    if (!translations[lang]) lang = 'en';
     
-    function setLanguage(lang) {
-        document.querySelectorAll('[data-i18n]').forEach(element => {
-            const key = element.getAttribute('data-i18n');
-            if (translations[lang] && translations[lang][key]) {
-                if ((element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') && element.hasAttribute('placeholder')) {
-                    element.setAttribute('placeholder', translations[lang][key]);
-                } else {
-                    element.innerHTML = translations[lang][key];
-                }
-            }
-        });
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-            const key = element.getAttribute('data-i18n-placeholder');
-            if (translations[lang] && translations[lang][key]) {
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key] !== undefined) {
+            if ((element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') && element.hasAttribute('placeholder')) {
                 element.setAttribute('placeholder', translations[lang][key]);
+            } else if (element.tagName === 'INPUT' && (element.type === 'submit' || element.type === 'button')) {
+                element.value = translations[lang][key];
+            } else {
+                element.innerHTML = translations[lang][key];
             }
-        });
-        document.querySelectorAll('[data-i18n-title]').forEach(element => {
-            const key = element.getAttribute('data-i18n-title');
-            if (translations[lang] && translations[lang][key]) {
-                element.setAttribute('title', translations[lang][key]);
-            }
-        });
-        document.querySelectorAll('.lang-en, .lang-hil, .lang-tl').forEach(el => el.classList.add('d-none'));
-        document.querySelectorAll('.lang-' + lang).forEach(el => el.classList.remove('d-none'));
+        }
+    });
+    
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (translations[lang] && translations[lang][key] !== undefined) {
+            element.setAttribute('placeholder', translations[lang][key]);
+        }
+    });
+    
+    document.querySelectorAll('[data-i18n-title]').forEach(element => {
+        const key = element.getAttribute('data-i18n-title');
+        if (translations[lang] && translations[lang][key] !== undefined) {
+            element.setAttribute('title', translations[lang][key]);
+        }
+    });
+    
+    document.querySelectorAll('.lang-en, .lang-hil, .lang-tl').forEach(el => el.classList.add('d-none'));
+    document.querySelectorAll('.lang-' + lang).forEach(el => el.classList.remove('d-none'));
+    
+    // Sync all language selectors present on the page
+    document.querySelectorAll('#languageSelector, select.language-selector').forEach(sel => {
+        sel.value = lang;
+    });
+    
+    try {
         localStorage.setItem('pagamuma_lang', lang);
-    }
+    } catch(e) {}
+}
 
-    // Load preferred language or default to English
-    const savedLang = localStorage.getItem('pagamuma_lang') || 'en';
-    if(languageSelector) {
-        languageSelector.value = savedLang;
-        languageSelector.addEventListener('change', (e) => {
-            setLanguage(e.target.value);
+if (typeof window !== 'undefined') {
+    window.translations = translations;
+    window.setLanguage = setLanguage;
+    window.applyTranslations = function() {
+        const currentLang = (typeof localStorage !== 'undefined' ? localStorage.getItem('pagamuma_lang') : null) || 'en';
+        setLanguage(currentLang);
+    };
+}
+
+if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedLang = (typeof localStorage !== 'undefined' ? localStorage.getItem('pagamuma_lang') : null) || 'en';
+        
+        document.querySelectorAll('#languageSelector, select.language-selector').forEach(selector => {
+            selector.value = savedLang;
+            selector.addEventListener('change', (e) => {
+                setLanguage(e.target.value);
+            });
         });
-    }
-    setLanguage(savedLang);
-});
+        
+        setLanguage(savedLang);
+    });
+}
