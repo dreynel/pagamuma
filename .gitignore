@@ -18,8 +18,9 @@ Thumbs.db
 .vscode/
 
 # Media & Videos
-video2/
-videos/
+video2/*
+!video2/README.md
+videos/*
 *.mp4
 *.webm
 *.mov

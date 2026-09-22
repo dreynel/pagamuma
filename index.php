@@ -505,7 +505,7 @@ $totalLanguages = 3; // English, Hiligaynon, Tagalog
                             </div>
                             <div>
                                 <h5 class="fw-bold text-dark mb-1" data-i18n="feat1_title">Interactive Pregnancy Tracker</h5>
-                                <p class="text-muted mb-0 small line-height-lg" data-i18n="feat1_desc">Watch your baby grow week by week with beautiful visual insights and fruit size comparisons on your premium dashboard.</p>
+                                <p class="text-muted mb-0 small line-height-lg" data-i18n="feat1_desc">Watch your baby grow week by week with beautiful fetal development visual insights and growth milestones on your personalized dashboard.</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-start mb-4 bg-white p-3 rounded-4 shadow-sm card-hover">

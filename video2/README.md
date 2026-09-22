@@ -13,3 +13,4 @@ Place the 8 localized Hiligaynon video files (.mp4) directly inside this `video2
 8. `VID.mp4` — Quick Reminders for Early Pregnancy
 
 > **Note**: Video files (`*.mp4`) are ignored by Git due to file size limits. Simply copy the `video2` folder or these 8 `.mp4` files from your source drive/USB into this directory.
+
