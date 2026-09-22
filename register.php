@@ -125,19 +125,6 @@ unset($_SESSION['error'], $_SESSION['success']);
                                 Create Account
                             </button>
 
-                            <!-- Social Placeholder -->
-                            <div class="text-center mb-4">
-                                <p class="text-muted small fw-medium mb-3">Or sign up with</p>
-                                <div class="d-flex gap-2 justify-content-center">
-                                    <a href="#" class="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center" style="width:45px;height:45px;">
-                                        <i class="fa-brands fa-google fs-5"></i>
-                                    </a>
-                                    <a href="#" class="btn btn-outline-primary rounded-circle d-flex align-items-center justify-content-center" style="width:45px;height:45px;">
-                                        <i class="fa-brands fa-facebook-f fs-5"></i>
-                                    </a>
-                                </div>
-                            </div>
-
                             <div class="text-center pb-4">
                                 <p class="text-muted mb-0"><span data-i18n="already_have_account">Already have an account?</span> <a href="login.php" class="text-primary fw-bold text-decoration-none" data-i18n="login_here">Sign In</a></p>
                             </div>
