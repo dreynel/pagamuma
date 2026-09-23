@@ -3,17 +3,10 @@
 require_once '../config/db.php';
 
 $mother_id = $_GET['id'] ?? null;
-$download = isset($_GET['download']) && $_GET['download'] == '1';
 if (!$mother_id) {
     echo "<script>window.location.href='index.php?page=dashboard';</script>";
     exit;
 }
-
-// Prevent any accidental output before CSV headers (which can cause HTML/doctype to appear in the CSV)
-if ($download) {
-    while (ob_get_level() > 0) { ob_end_clean(); }
-}
-
 
 // Fetch mother's basic info
 $stmt = $pdo->prepare("
@@ -35,35 +28,6 @@ $log_stmt = $pdo->prepare("SELECT * FROM health_logs WHERE user_id = ? ORDER BY 
 $log_stmt->execute([$mother_id]);
 $logs = $log_stmt->fetchAll(PDO::FETCH_ASSOC);
 
-if ($download) {
-    // Simple CSV download for this mother's health logs
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename="mother_'.$mother_id.'_health_logs.csv"');
-
-    $out = fopen('php://output', 'w');
-    // Match the UI import template header
-    fputcsv($out, ['Date','Weight','BP','Symptoms/Notes','Prescription']);
-
-    foreach ($logs as $log) {
-        // Strip any HTML that might be stored in symptoms/prescription fields
-        $date = $log['log_date'] ?? '';
-        $weight = $log['weight_kg'] ?? '';
-        $bp = $log['blood_pressure'] ?? '';
-
-        $symptoms = $log['symptoms'] ?? '';
-        $symptoms = strip_tags((string)$symptoms);
-        $symptoms = str_replace(["\r","\n"], ' ', $symptoms);
-
-        $prescription = $log['prescription'] ?? '';
-        $prescription = strip_tags((string)$prescription);
-        $prescription = str_replace(["\r","\n"], ' ', $prescription);
-
-        fputcsv($out, [$date, $weight, $bp, $symptoms, $prescription]);
-    }
-
-    fclose($out);
-    exit;
-}
 ?>
 
 
@@ -95,8 +59,8 @@ if ($download) {
         <h5 class="fw-bold text-dark mb-0" data-i18n="health_vitals_log_title">Health & Vitals Log</h5>
 
         <div class="d-flex align-items-center gap-2">
-            <a href="index.php?page=mother_logs&id=<?= (int)$mother_id ?>&download=1" class="btn btn-sm btn-outline-secondary rounded-pill shadow-sm px-3">
-                <i class="fa-solid fa-file-csv me-2"></i> <span data-i18n="btn_download_csv">Download CSV</span>
+            <a href="../api/download_mother_logs_csv.php?id=<?= (int)$mother_id ?>" class="btn btn-sm btn-outline-secondary rounded-pill shadow-sm px-3">
+                <i class="fa-solid fa-file-csv me-2 text-danger"></i> <span data-i18n="btn_download_csv">Download CSV</span>
             </a>
         </div>
     </div>

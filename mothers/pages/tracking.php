@@ -45,9 +45,16 @@ $logs = $stmt->fetchAll();
 
     <div class="col-lg-8">
         <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
                 <h5 class="fw-bold text-dark mb-0" data-i18n="recent_history_title">Recent History</h5>
-                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" onclick="window.print()"><i class="fa-solid fa-download me-2"></i> <span data-i18n="btn_export">Export</span></button>
+                <div class="d-flex align-items-center gap-2">
+                    <a href="../api/download_mother_logs_csv.php" class="btn btn-sm btn-outline-primary rounded-pill px-3 shadow-sm" title="Download CSV">
+                        <i class="fa-solid fa-file-csv me-1"></i> <span data-i18n="btn_download_csv">Download CSV</span>
+                    </a>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 shadow-sm" onclick="window.print()">
+                        <i class="fa-solid fa-print me-1"></i> <span data-i18n="btn_export">Print</span>
+                    </button>
+                </div>
             </div>
             
             <div class="table-responsive">

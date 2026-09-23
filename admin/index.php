@@ -5,6 +5,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 $page = $_GET['page'] ?? 'dashboard';
+
+// Clean redirect for CSV downloads before any HTML is sent
+if (isset($_GET['download']) && $_GET['download'] == '1') {
+    $dl_id = isset($_GET['id']) ? '?id=' . urlencode($_GET['id']) : '';
+    header("Location: ../api/download_mother_logs_csv.php" . $dl_id);
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
