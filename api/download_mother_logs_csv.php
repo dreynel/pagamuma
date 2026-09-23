@@ -91,3 +91,4 @@ foreach ($logs as $log) {
 
 fclose($out);
 exit;
+

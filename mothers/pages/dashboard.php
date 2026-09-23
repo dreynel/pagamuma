@@ -168,7 +168,7 @@ $fetal_milestones = [
                             <img src="../<?= htmlspecialchars($current_milestone['image']) ?>" alt="Baby Week <?= $current_week ?>" class="w-100 h-100" style="object-fit: cover; transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
                         </div>
                         <div class="mt-2 text-center">
-                            <span class="badge bg-dark bg-opacity-75 text-white rounded-pill px-3 py-1 shadow-sm small fw-semibold">
+                            <span class="badge bg-dark bg-opacity-75 text-white rounded-pill px-3 py-1 shadow-sm small fw-semibold" data-i18n="week_<?= $display_week ?>_title">
                                 <?= htmlspecialchars($current_milestone['title']) ?>
                             </span>
                         </div>
@@ -201,17 +201,27 @@ $fetal_milestones = [
                             <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill fw-bold"><span data-i18n="dash_trimester">Trimester</span> <?= $trimester ?></span>
                             <small class="text-muted"><i class="fa-solid fa-circle-info me-1 text-primary"></i> <span data-i18n="dash_baby_stage">Baby's Milestone</span></small>
                         </div>
-                        <h4 class="fw-bold text-dark mb-2"><?= htmlspecialchars($current_milestone['title']) ?></h4>
+                        <h4 class="fw-bold text-dark mb-2" data-i18n="week_<?= $display_week ?>_title"><?= htmlspecialchars($current_milestone['title']) ?></h4>
                         <div class="p-3 rounded-4 mb-3" style="background: #faf5ff; border: 1px solid #f3e8ff;">
                             <div class="d-flex align-items-start">
                                 <i class="fa-solid fa-wand-magic-sparkles text-primary mt-1 me-2 fs-5 flex-shrink-0"></i>
                                 <p class="mb-0 text-dark fw-medium lh-base" style="font-size: 0.95rem;">
-                                    <?= $has_edd ? htmlspecialchars($current_milestone['highlight']) : '<span data-i18n="dash_insight_placeholder">Set your due date to unlock medical insights for your current week of pregnancy.</span>' ?>
+                                    <?php if ($has_edd): ?>
+                                        <span data-i18n="week_<?= $display_week ?>_highlight"><?= htmlspecialchars($current_milestone['highlight']) ?></span>
+                                    <?php else: ?>
+                                        <span data-i18n="dash_insight_placeholder">Set your due date to unlock medical insights for your current week of pregnancy.</span>
+                                    <?php endif; ?>
                                 </p>
                             </div>
                         </div>
                         <h6 class="fw-bold text-dark mb-2" data-i18n="dash_insight">Development Insight</h6>
-                        <p class="text-muted mb-4 lh-lg" style="font-size: 0.98rem;"><?= $has_edd ? $trimester_fact : '<span data-i18n="dash_insight_placeholder">Set your due date to unlock medical insights for your current week of pregnancy.</span>' ?></p>
+                        <p class="text-muted mb-4 lh-lg" style="font-size: 0.98rem;">
+                            <?php if ($has_edd): ?>
+                                <span data-i18n="dash_trimester_fact_<?= $trimester ?>"><?= htmlspecialchars($trimester_fact) ?></span>
+                            <?php else: ?>
+                                <span data-i18n="dash_insight_placeholder">Set your due date to unlock medical insights for your current week of pregnancy.</span>
+                            <?php endif; ?>
+                        </p>
                     </div>
                     <div class="mt-auto bg-light rounded-4 p-3 border border-light shadow-sm">
                         <div class="d-flex align-items-center">
@@ -316,18 +326,18 @@ $fetal_milestones = [
                         </span>
                         <span data-i18n="dash_fetal_milestones">40-Week Baby Development Journey</span>
                     </h5>
-                    <p class="text-muted small mb-0">Follow your baby's anatomical development, size milestones, and growth from conception to delivery.</p>
+                    <p class="text-muted small mb-0" data-i18n="dash_modal_subtitle">Follow your baby's anatomical development, size milestones, and growth from conception to delivery.</p>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
             <!-- Trimester Filter Tabs -->
             <div class="px-4 pt-3 pb-2 bg-white border-bottom d-flex flex-wrap gap-2 align-items-center">
-                <span class="text-muted small fw-bold me-2"><i class="fa-solid fa-filter me-1 text-primary"></i> Filter:</span>
-                <button type="button" class="btn btn-sm btn-primary trim-btn rounded-pill px-3 fw-medium active" onclick="filterTrimester('all', this)">All Weeks (1-40)</button>
-                <button type="button" class="btn btn-sm btn-outline-primary trim-btn rounded-pill px-3 fw-medium" onclick="filterTrimester('1', this)">1st Trimester (W1-12)</button>
-                <button type="button" class="btn btn-sm btn-outline-primary trim-btn rounded-pill px-3 fw-medium" onclick="filterTrimester('2', this)">2nd Trimester (W13-27)</button>
-                <button type="button" class="btn btn-sm btn-outline-primary trim-btn rounded-pill px-3 fw-medium" onclick="filterTrimester('3', this)">3rd Trimester (W28-40)</button>
+                <span class="text-muted small fw-bold me-2"><i class="fa-solid fa-filter me-1 text-primary"></i> <span data-i18n="dash_filter_label">Filter:</span></span>
+                <button type="button" class="btn btn-sm btn-primary trim-btn rounded-pill px-3 fw-medium active" onclick="filterTrimester('all', this)" data-i18n="dash_filter_all">All Weeks (1-40)</button>
+                <button type="button" class="btn btn-sm btn-outline-primary trim-btn rounded-pill px-3 fw-medium" onclick="filterTrimester('1', this)" data-i18n="dash_filter_trim1">1st Trimester (W1-12)</button>
+                <button type="button" class="btn btn-sm btn-outline-primary trim-btn rounded-pill px-3 fw-medium" onclick="filterTrimester('2', this)" data-i18n="dash_filter_trim2">2nd Trimester (W13-27)</button>
+                <button type="button" class="btn btn-sm btn-outline-primary trim-btn rounded-pill px-3 fw-medium" onclick="filterTrimester('3', this)" data-i18n="dash_filter_trim3">3rd Trimester (W28-40)</button>
             </div>
 
             <div class="modal-body p-4 bg-light" style="max-height: 70vh;">
@@ -341,16 +351,16 @@ $fetal_milestones = [
                             <div class="position-relative" style="height: 160px; overflow: hidden; background: #fdf2f8;">
                                 <img src="../<?= htmlspecialchars($m['image']) ?>" alt="Week <?= $wk ?>" class="w-100 h-100" style="object-fit: cover;">
                                 <span class="badge bg-dark bg-opacity-75 text-white position-absolute top-0 start-0 m-2 rounded-pill px-3 py-1 fw-bold small">
-                                    Week <?= $wk ?>
+                                    <span data-i18n="dash_week">Week</span> <?= $wk ?>
                                 </span>
                                 <?php if($is_current): ?>
                                     <span class="badge bg-primary text-white position-absolute top-0 end-0 m-2 rounded-pill px-2 py-1 small shadow-sm">
-                                        <i class="fa-solid fa-heart me-1"></i> Current
+                                        <i class="fa-solid fa-heart me-1"></i> <span data-i18n="dash_current_badge">Current</span>
                                     </span>
                                 <?php endif; ?>
                             </div>
                             <div class="card-body p-3 d-flex flex-column">
-                                <h6 class="fw-bold text-dark mb-2"><?= htmlspecialchars($m['title']) ?></h6>
+                                <h6 class="fw-bold text-dark mb-2" data-i18n="week_<?= $wk ?>_title"><?= htmlspecialchars($m['title']) ?></h6>
                                 <div class="d-flex gap-1 mb-2">
                                     <span class="badge bg-light text-secondary border rounded-pill px-2 py-1 small" style="font-size: 0.72rem;">
                                         <i class="fa-solid fa-ruler-vertical text-muted me-1"></i><?= $m['length'] ?>
@@ -359,7 +369,7 @@ $fetal_milestones = [
                                         <i class="fa-solid fa-weight-scale text-muted me-1"></i><?= $m['weight'] ?>
                                     </span>
                                 </div>
-                                <p class="text-muted small mb-0 lh-base flex-grow-1" style="font-size: 0.82rem;">
+                                <p class="text-muted small mb-0 lh-base flex-grow-1" style="font-size: 0.82rem;" data-i18n="week_<?= $wk ?>_highlight">
                                     <?= htmlspecialchars($m['highlight']) ?>
                                 </p>
                             </div>
@@ -370,7 +380,7 @@ $fetal_milestones = [
             </div>
 
             <div class="modal-footer bg-white border-top px-4 py-2 d-flex justify-content-between">
-                <small class="text-muted"><i class="fa-solid fa-circle-check text-success me-1"></i> Verified against clinical obstetrics fetal growth parameters.</small>
+                <small class="text-muted"><i class="fa-solid fa-circle-check text-success me-1"></i> <span data-i18n="dash_verified_clinical">Verified against clinical obstetrics fetal growth parameters.</span></small>
                 <button type="button" class="btn btn-secondary rounded-pill px-4 btn-sm" data-bs-dismiss="modal" data-i18n="dash_close">Close</button>
             </div>
         </div>
@@ -396,7 +406,11 @@ function filterTrimester(trim, btn) {
 }
 
 function shareBabyMilestone() {
-    const text = `I'm at Week <?= $has_edd ? $current_week : 1 ?> of pregnancy! Baby milestone: <?= addslashes($current_milestone['title']) ?> (Est. length: <?= addslashes($current_milestone['length']) ?>, weight: <?= addslashes($current_milestone['weight']) ?>). Tracked with PAG-AMUMA!`;
+    const lang = (typeof localStorage !== 'undefined' ? localStorage.getItem('pagamuma_lang') : null) || 'en';
+    const t = (window.translations && window.translations[lang]) ? window.translations[lang] : ((window.translations && window.translations['en']) ? window.translations['en'] : {});
+    const weekTitle = t['week_<?= $display_week ?>_title'] || '<?= addslashes($current_milestone['title']) ?>';
+    const weekLabel = t['dash_week'] || 'Week';
+    const text = `${weekLabel} <?= $has_edd ? $current_week : 1 ?>: ${weekTitle} (Est. length: <?= addslashes($current_milestone['length']) ?>, weight: <?= addslashes($current_milestone['weight']) ?>). Tracked with PAG-AMUMA!`;
     if (navigator.share) {
         navigator.share({
             title: 'My Pregnancy Journey - PAG-AMUMA',
@@ -415,4 +429,11 @@ function shareBabyMilestone() {
         }
     }
 }
+
+// Ensure translations are applied whenever the milestones modal opens
+document.getElementById('babyStagesModal')?.addEventListener('show.bs.modal', function() {
+    if (typeof window.applyTranslations === 'function') {
+        window.applyTranslations();
+    }
+});
 </script>
