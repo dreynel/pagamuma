@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once '../config/db.php';
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../login.php");
     exit;
@@ -51,7 +53,7 @@ if (isset($_GET['download']) && $_GET['download'] == '1') {
                 <div class="rounded-circle mb-2 profile-img border border-2 border-white shadow-sm bg-danger d-inline-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
                     <span class="text-white fs-4 fw-bold">A</span>
                 </div>
-                <h6 class="fw-semibold mb-0 text-dark"><?= htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_name']) ?></h6>
+                <h6 class="fw-semibold mb-0 text-dark"><?= htmlspecialchars(trim(($_SESSION['first_name'] ?? 'Admin') . ' ' . ($_SESSION['last_name'] ?? ''))) ?></h6>
                 <small class="text-muted">Medical Staff</small>
             </div>
 

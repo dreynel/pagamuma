@@ -1,5 +1,7 @@
 <?php
 // c:\xampp\htdocs\pagamuma\admin\pages\reviews.php
+require_once '../config/db.php';
+
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
