@@ -28,11 +28,13 @@ $totalLanguages = 3; // English, Hiligaynon, Tagalog
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .hero-public {
-            background-image: linear-gradient(135deg, rgba(255, 205, 210, 0.82), rgba(255, 243, 224, 0.85)), url('assets/images/bg.png');
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(255, 240, 243, 0.90) 100%), url('assets/images/mina.jpg');
             background-size: cover;
-            background-position: center;
+            background-position: center 38%;
+            background-repeat: no-repeat;
             padding: 110px 0 90px;
             border-bottom: 4px solid var(--primary-color);
+            position: relative;
         }
         .resource-card {
             transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1);
@@ -322,10 +324,16 @@ $totalLanguages = 3; // English, Hiligaynon, Tagalog
         <div class="container position-relative z-index-1 text-center py-4">
             <div class="row justify-content-center">
                 <div class="col-lg-9 col-xl-8">
-                    <!-- Trust Pill Badge -->
-                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white shadow-sm mb-4 border border-white-50">
-                        <span class="badge bg-danger rounded-pill px-2.5 py-1 small fw-bold">ISO 25010</span>
-                        <span class="text-dark fw-semibold small" data-i18n="hero_badge">✨ ISO 25010 Evaluated • 100% Free & Open</span>
+                    <!-- Mina RHU & Trust Pill Badges -->
+                    <div class="d-flex flex-wrap justify-content-center align-items-center gap-2 mb-4">
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white shadow-sm border border-danger border-opacity-25">
+                            <span class="badge bg-danger rounded-pill px-2.5 py-1 small fw-bold"><i class="fa-solid fa-landmark me-1"></i> Mina RHU</span>
+                            <span class="text-danger fw-semibold small">Rural Health Unit • Municipality of Mina</span>
+                        </div>
+                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white shadow-sm border border-white-50">
+                            <span class="badge bg-danger rounded-pill px-2.5 py-1 small fw-bold">ISO 25010</span>
+                            <span class="text-dark fw-semibold small" data-i18n="hero_badge">✨ ISO 25010 Evaluated • 100% Free & Open</span>
+                        </div>
                     </div>
 
                     <div class="logo-circle mx-auto mb-4 border-white border-4 shadow-md" style="width:110px;height:110px;background: linear-gradient(135deg, rgba(229,115,115,0.9), rgba(255,183,77,0.9));">

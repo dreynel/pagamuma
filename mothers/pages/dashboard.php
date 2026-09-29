@@ -95,14 +95,23 @@ $fetal_milestones = [
     $baby_size = $current_milestone['title'];
 ?>
 
-<div class="row mb-4 align-items-center">
-    <div class="col-md-8">
-        <h2 class="fw-bold text-dark mb-1">Welcome, <?= htmlspecialchars($_SESSION['first_name']) ?> 👋</h2>
-        <p class="text-muted mb-0" data-i18n="dash_summary">Here is your daily pregnancy summary.</p>
-
-    </div>
-    <div class="col-md-4 text-md-end mt-3 mt-md-0">
-        <a href="index.php?page=tracking" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-medium"><i class="fa-solid fa-heart-pulse me-2"></i> <span data-i18n="dash_log_health">Log Health Today</span></a>
+<!-- Mina RHU Welcome Header Card -->
+<div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(254, 242, 244, 0.94) 100%), url('../assets/images/mina.jpg') center 38%/cover no-repeat; border-left: 5px solid var(--primary-color) !important;">
+    <div class="card-body p-4 position-relative z-index-1">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="d-inline-flex align-items-center gap-1 badge bg-white text-danger border shadow-xs rounded-pill px-3 py-1 mb-2 fw-semibold">
+                    <i class="fa-solid fa-landmark text-danger"></i> Rural Health Unit • Municipality of Mina
+                </div>
+                <h2 class="fw-bold text-dark mb-1">Welcome, <?= htmlspecialchars($_SESSION['first_name']) ?> 👋</h2>
+                <p class="text-muted mb-0" data-i18n="dash_summary">Here is your daily pregnancy summary.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                <a href="index.php?page=tracking" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm fw-medium">
+                    <i class="fa-solid fa-heart-pulse me-2"></i> <span data-i18n="dash_log_health">Log Health Today</span>
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 

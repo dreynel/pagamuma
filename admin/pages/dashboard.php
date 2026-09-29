@@ -62,12 +62,20 @@ function renderStars($rating) {
 }
 ?>
 
+<!-- Mina RHU Admin Header Card -->
+<div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 240, 242, 0.95) 100%), url('../assets/images/mina.jpg') center 38%/cover no-repeat; border-left: 5px solid #c62828 !important;">
+    <div class="card-body p-4 position-relative z-index-1">
+        <div class="d-inline-flex align-items-center gap-1 badge bg-white text-danger border shadow-xs rounded-pill px-3 py-1 mb-2 fw-semibold">
+            <i class="fa-solid fa-landmark text-danger"></i> Rural Health Unit • Municipality of Mina, Iloilo
+        </div>
+        <h2 class="fw-bold text-dark mb-1" data-i18n="mothers_directory_title">Mothers Directory</h2>
+        <p class="text-muted mb-0" data-i18n="mothers_directory_desc">Overview of registered pregnant mothers and pending prescriptions needing your attention.</p>
+    </div>
+</div>
+
 <div class="row mb-4">
     <div class="col-12">
-        <h2 class="fw-bold text-dark mb-1" data-i18n="mothers_directory_title">Mothers Directory</h2>
-        <p class="text-muted" data-i18n="mothers_directory_desc">Overview of registered pregnant mothers and pending prescriptions needing your attention.</p>
-
-        <form method="GET" class="mt-3">
+        <form method="GET" class="mt-1">
             <input type="hidden" name="page" value="dashboard" />
             <div class="row g-2">
                 <div class="col-md-6">

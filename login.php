@@ -49,6 +49,9 @@ unset($_SESSION['error']);
                 <div class="col-lg-6 d-none d-lg-flex hero-section align-items-center justify-content-center position-relative">
                     <div class="hero-overlay"></div>
                     <div class="hero-content text-center text-white position-relative z-index-1">
+                        <div class="badge bg-white bg-opacity-20 text-white rounded-pill px-3 py-1.5 mb-3 fw-medium border border-white border-opacity-25 shadow-sm">
+                            <i class="fa-solid fa-landmark me-1"></i> Rural Health Unit • Municipality of Mina
+                        </div>
                         <div class="logo-circle mb-4 mx-auto">
                             <i class="fa-solid fa-child-reaching fs-1"></i>
                         </div>
